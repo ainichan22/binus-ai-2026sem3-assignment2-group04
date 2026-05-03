@@ -40,16 +40,16 @@
   - **test accuracy = 0.8735**(超過 85% 目標)
   - Drive `models/` 出現 `baseline_v1.keras` (6.7 MB) 與 `baseline_v1_history.pkl`
   - 註:多倫多 mirror 停電,Cell 5 改用 `datasets.load_dataset("cifar10")`(HF)
-- [ ] 上傳 `notebooks/01_baseline_ID.ipynb` 到 Colab(已套用 HF 資料載入 + Section 7 從 Drive 載入 EN 訓練好的 `baseline_v1.keras`,跳過重訓)
-- [ ] ID: Restart & Run All(~3-5 分鐘)— Section 7 載模型,Section 8-11+14 真的執行,自然產生印尼文 outputs 與 figures
-- [ ] 上傳前確認 Drive 裡 `models/baseline_v1.keras` 與 `baseline_v1_history.pkl` 都在(EN 跑完已寫入)
+- [x] 上傳 `notebooks/01_baseline_ID.ipynb` 到 Colab(已套用 HF 資料載入 + Section 7 從 Drive 載入 EN 訓練好的 `baseline_v1.keras`,跳過重訓)
+- [x] ID: Restart & Run All — Section 7 成功載模型,Section 8-11 真的執行,印尼文 outputs 與 figures 全到位
+- [x] 確認 Drive 裡 `models/baseline_v1.keras` 與 `baseline_v1_history.pkl` 都在(EN 跑完已寫入)
 
 ### 本機後處理 (Claude + User)
 - [x] User 從 Colab 下載 EN `.ipynb` 覆蓋本機 `notebooks/01_baseline_EN.ipynb`
-- [ ] User 從 Colab 下載 ID `.ipynb` 覆蓋本機 `notebooks/01_baseline_ID.ipynb`(等 ID 跑完)
+- [x] User 從 Colab 下載 ID `.ipynb` 覆蓋本機 `notebooks/01_baseline_ID.ipynb`
 - [ ] User 從 Drive 下載 `baseline_v1.keras` 到本機 `models/`(被 `.gitignore` 擋住,不進 repo)
 - [x] Claude review EN 結果、commit + push EN(trained outputs)+ ID 的 HF cell 同步
-- [ ] Claude commit + push ID 跑完的版本(等 ID 跑完)
+- [x] Claude review ID 結果、commit + push ID(trained outputs,test acc 0.8735 與 EN 一致)
 
 ---
 
