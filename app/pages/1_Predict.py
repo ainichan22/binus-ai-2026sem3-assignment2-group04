@@ -78,7 +78,10 @@ arr = pil_to_array(img)
 
 with st.spinner(t("predict.processing")):
     model = load_transfer_model()
-    proba = model.predict(preprocess_batch(arr), verbose=0)[0]
+    # Use direct call instead of model.predict() — the latter sets up a
+    # tf.data pipeline + progress UI on every call, which dominates
+    # wall-clock for single-image inference (~10-100x slower).
+    proba = model(preprocess_batch(arr), training=False).numpy()[0]
 
 
 # Display: image left, top-3 right

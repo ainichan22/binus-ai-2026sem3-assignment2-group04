@@ -28,8 +28,16 @@ def _resolve(filename: str) -> Path:
 
 @st.cache_resource(show_spinner="Loading transfer-learning model — first request only")
 def load_transfer_model() -> tf.keras.Model:
-    """Load the MobileNetV2 transfer-learning model. Cached for session."""
-    return tf.keras.models.load_model(_resolve("transfer_mobilenet_v1.keras"))
+    """Load the MobileNetV2 transfer-learning model and warm it up so the
+    first real prediction doesn't pay the graph-tracing cost. Cached for
+    the session lifetime."""
+    import numpy as np
+    model = tf.keras.models.load_model(_resolve("transfer_mobilenet_v1.keras"))
+    # Warm-up: one dummy forward pass so TF builds the inference graph now.
+    # Without this the first user prediction adds ~5-10 seconds of tracing.
+    dummy = np.zeros((1, 96, 96, 3), dtype=np.float32)
+    _ = model(dummy, training=False)
+    return model
 
 
 @st.cache_resource(show_spinner=False)
