@@ -1,135 +1,137 @@
 # Demo Video Script — CIFAR-10 Image Classifier
 
-> **Target length:** ≤ 5 minutes (Project_Plan §4.5 budget).
-> **Spoken word target:** ~700 words at ~150 wpm + screen transitions.
-> **Bracketed text** = stage directions / what to show on screen.
-> **Bold lines** = on-screen text or slides.
+> **Target length:** ~4 minutes (well under the 5-minute Project_Plan §4.5 cap).
+> **Format:** entirely on the live Streamlit app; no slides.
+> **Live URL:** <https://huggingface.co/spaces/ainichan/binus-ai-2026sem3-assignment2-group04>
+>
+> Each section below has the action(s) the recorder should take in the browser, then the line(s) to read out loud while that action happens. Hold each visual for the full narration before moving on.
 
 ---
 
-## 0:00 – 0:25 · Opening (Slide)
+## 0:00 – 0:20 · Open the app (Home page)
 
-[Slide: project title, team names, course]
+**Action:** Open the live URL in a clean browser window. Land on the home page. Cursor on the title.
 
-> Hi, we are **Group 4** from the Machine Learning course. We built a **CIFAR-10 image classifier** that turns an uploaded photo into one of ten object categories — airplane, cat, dog, ship, and so on.
->
-> Our project compares three optimization strategies on this task and serves the best one as a public web app. The headline result: transfer learning from MobileNetV2 reaches **89.93 %** test accuracy, beating our from-scratch baseline by 2.6 percentage points.
->
-> Let me walk you through how we got there, and then we'll see the live demo.
+**Narration:**
+> Hi, we're Group 4. This is our CIFAR-10 image classifier — a web app that takes any photo and classifies it into one of ten categories: airplane, cat, dog, ship, and so on. The whole thing is live on Hugging Face Spaces, and we'll walk through every page in the next four minutes.
 
 ---
 
-## 0:25 – 1:30 · Three-model comparison (Slide)
+## 0:20 – 0:40 · Show the bilingual UI (Sidebar)
 
-[Slide: bar chart of three models' test accuracy, or this table on screen]
+**Action:**
+1. Click the language dropdown in the sidebar (top of sidebar).
+2. Choose **Bahasa Indonesia** — every label changes.
+3. Switch back to **English**.
 
-| Model | Test accuracy |
-|---|---|
-| Baseline VGG-style CNN (manual HP) | 0.8735 |
-| Tuned baseline (Keras Tuner Hyperband) | 0.8689 |
-| **Transfer learning (MobileNetV2)** | **0.8993** |
-
-> We trained three models on the same data split.
->
-> **First**, a from-scratch VGG-style CNN — three convolutional blocks with progressive dropout. It reaches 87.35 %. Solid, but not amazing.
->
-> **Second**, we ran automated hyperparameter search with Keras Tuner Hyperband over seven hyperparameters — learning rate, dropout per block, weight decay, and so on. Thirty trials over an hour of GPU time. The result was 86.89 % — *slightly below* our hand-tuned baseline. This is actually an interesting finding: **the hand-tuning was already at the noise floor of automated search**, which means the architecture was the bottleneck, not the hyperparameters.
->
-> **Third**, transfer learning. We took MobileNetV2, pre-trained on ImageNet, upscaled CIFAR images from 32×32 to 96×96, and fine-tuned in two stages. This jumped to **89.93 %** — and crucially, the gains landed on classes the baseline struggled with: **bird +6.2 percentage points, cat +4.4, frog +3.1**. Vehicle classes like ship barely moved, because they were already saturated.
->
-> Now let's see the app.
+**Narration:**
+> One feature we want to highlight first — the app is bilingual at runtime. Every string flows through an i18n module, so the entire interface switches between English and Bahasa Indonesia with one click.
 
 ---
 
-## 1:30 – 2:45 · Live demo — Predict page
+## 0:40 – 1:50 · Predict page — sample image (success + Grad-CAM)
 
-[Switch to live app at https://huggingface.co/spaces/ainichan/binus-ai-2026sem3-assignment2-group04 — show full window]
+**Action:**
+1. Click **Predict** in the sidebar nav.
+2. In the sidebar, choose input method **Pick a sample**.
+3. From the sample dropdown, choose **03_cat** (or any sample).
+4. Wait ~1 second for the prediction to render.
+5. Let the viewer see the original 32×32 image, Top-3 bars, and Grad-CAM overlay.
 
-> This is the live deployment on Hugging Face Spaces. Three pages — Predict, Metrics, About — and at the top of the sidebar, a language switcher.
-
-[Click the language dropdown → switch to Bahasa Indonesia → all UI text changes]
-
-> The app supports English and Bahasa Indonesia at runtime. Every label, button, and status message is i18n-keyed.
-
-[Switch back to English. Go to Predict page. Pick a sample image — e.g., the cat sample.]
-
-> On the Predict page, I can upload an image, pick a built-in CIFAR sample, or use my webcam. Let's start with a sample — this 32×32 cat thumbnail.
-
-[Wait for prediction to render, ~1 second]
-
-> The model gives us a Top-3 prediction list with confidence scores. Cat at the top — correct. Below that, **Grad-CAM** — a heatmap showing which pixels drove the prediction. Notice it's looking at the face and body region, not the background, which is what we want.
-
-[Now upload a real-world high-resolution photo from a folder — ideally one that *fails* or has lower confidence. If a real-world cat photo, narrate the result.]
-
-> Now let's try a real-world photo from the web — a higher-resolution image the model has never seen at this scale. The prediction is correct, but the confidence drops compared to the in-distribution CIFAR sample. This is the **domain gap**: our model was trained on 32×32 thumbnails, so high-resolution natural photos sit slightly outside its training distribution. We discuss this honestly in our report.
+**Narration:**
+> The Predict page is the main feature. I can upload an image, pick a built-in CIFAR sample, or use my webcam. Let me start with a sample.
+>
+> The model gives a Top-3 prediction list with confidence scores — cat first, with about 90 % confidence. That matches the actual image.
+>
+> Below it is a Grad-CAM heatmap. The red areas show which pixels drove the prediction. You can see the model is looking at the cat's face and body — not the background. That's how we know it learned the right features, not just memorized backgrounds.
 
 ---
 
-## 2:45 – 3:45 · Metrics page tour
+## 1:50 – 2:30 · Predict page — real-world upload (domain gap moment)
 
-[Click Metrics tab in sidebar. Default selection is Transfer (MobileNetV2 fine-tuned).]
+**Action:**
+1. Sidebar → switch input method to **Upload an image**.
+2. Drag a real-world high-resolution photo (e.g., a clear cat or dog photo from the web, ~500×500 pixels).
+3. Wait for prediction.
+4. Point at the lower confidence number compared to the sample.
 
-> The Metrics page shows the model's evaluation in detail. Test accuracy 89.93 %, test loss 0.297, about 1.5 million trainable parameters during fine-tuning.
-
-[Scroll to the model comparison table.]
-
-> Here's the three-model side-by-side. Then training curves — you can see Stage 1 head training, then a transition into Stage 2 fine-tuning where validation accuracy climbs from around 86 % to 90 %.
-
-[Scroll to per-class report.]
-
-> The per-class table reveals where the model is strong — automobile, ship, truck — and where it's still weak. Cat is our worst class at F1 0.80, but that's already significantly better than the baseline's 0.75.
-
-[Scroll to confusion matrix.]
-
-> The confusion matrix confirms the diagonal is dominant. Off-diagonal errors cluster between visually similar classes — cat versus dog, deer versus horse, bird versus airplane. These are well-known CIFAR-10 difficulty patterns, not failures of our specific model.
+**Narration:**
+> Now let's try a real-world photo from the web — a high-resolution image the model has never seen at this scale.
+>
+> The prediction is correct, but the confidence is noticeably lower. This is the **domain gap**: our model trained on 32×32 thumbnails, so high-resolution natural photos sit slightly outside its training distribution. We discuss this honestly in our written report.
 
 ---
 
-## 3:45 – 4:25 · Architecture and "why this works" (Slide or About page)
+## 2:30 – 3:30 · Metrics page — three-model comparison
 
-[Switch to About page, or back to slides showing the model architecture diagram.]
+**Action:**
+1. Click **Metrics** in the sidebar.
+2. Default selection is "Transfer (MobileNetV2 fine-tuned)".
+3. Point at the four summary cards: Test accuracy 0.8993, Test loss 0.2971, ~1.52M params, 26 epochs.
+4. Scroll to the **Model comparison** table (three rows).
+5. Scroll to the training curves plot.
+6. Switch model picker to **Baseline** — show the curves redraw.
+7. Switch to **Tuned baseline** — show again.
+8. Switch back to **Transfer**.
+9. Scroll to per-class table.
+10. Scroll to confusion matrix image.
 
-> A quick look under the hood. Our final model is MobileNetV2 with the classifier head replaced — Global Average Pooling, Dropout, and a 10-way Dense layer.
+**Narration:**
+> The Metrics page tells the optimization story. We trained three models on the same data split.
 >
-> Two-stage training is the key. **Stage 1**: backbone frozen, train just the head — 6 epochs. **Stage 2**: unfreeze the top 30 layers and fine-tune at a 100× smaller learning rate — 20 epochs. The two-stage schedule prevents random head gradients from destroying the pretrained backbone weights.
+> *(point at comparison table)* The from-scratch baseline reaches 87.35 %. Hyperparameter search with Keras Tuner Hyperband landed on 86.89 % — slightly *worse* than hand-tuning, which is actually informative: it means the architecture itself was the bottleneck.
 >
-> One subtle but critical detail: BatchNormalization layers must stay in inference mode throughout. Without that single flag, accuracy drops by 5 to 10 points.
+> Transfer learning from MobileNetV2 jumped to **89.93 %**, with the biggest gains landing on classes the baseline struggled with — bird, cat, and frog all improved by 3 to 6 percentage points.
+>
+> *(point at training curves)* The curves show clean convergence with almost no train-validation gap.
+>
+> *(point at confusion matrix)* And the confusion matrix shows most off-diagonal errors are between visually similar classes — cat versus dog, deer versus horse — which are the well-known hard cases for CIFAR-10.
 
 ---
 
-## 4:25 – 4:50 · Limitations and future work
+## 3:30 – 3:50 · About page — architecture in one breath
 
-[Slide: "Limitations & Future Work"]
+**Action:**
+1. Click **About** in the sidebar.
+2. Let the architecture block be visible.
 
-> Two honest limitations to flag.
->
-> **One — domain gap.** CIFAR-10 trains on 32×32 thumbnails. Real-world photos at 200 pixels and up will sometimes confuse the model even after transfer learning. This is a *dataset* problem, not a model problem.
->
-> **Two — hyperparameter ceiling.** On this architecture and resolution, automated search couldn't beat hand-tuning. Future gains require either a bigger backbone, stronger augmentation like Mixup or CutMix, or higher input resolution — not more hyperparameter tweaking.
+**Narration:**
+> A quick look at the architecture: MobileNetV2 backbone pre-trained on ImageNet, followed by global average pooling, dropout, and a 10-way dense layer. Trained in two stages — first frozen, then with the top 30 layers fine-tuned at a hundred-times-smaller learning rate.
 
 ---
 
-## 4:50 – 5:00 · Closing
+## 3:50 – 4:00 · Closing (URL visible in browser bar)
 
-[Slide: project URL, GitHub URL, team]
+**Action:** Scroll up so the browser URL bar is clearly visible. Cursor near it.
 
-> The full code, both English and Indonesian notebooks, and the live demo are all linked in the description.
->
-> **Live app:** huggingface.co/spaces/ainichan/binus-ai-2026sem3-assignment2-group04
->
-> Thanks for watching.
+**Narration:**
+> Everything you saw is live at this Hugging Face Space. Source code and reproducible notebooks are linked in the description. Thanks for watching.
 
 ---
 
 ## Recording notes
 
-- **Two windows ready:**
-  1. Browser at the live HF Space, logged out (clean view).
-  2. Slide deck for opening, three-model comparison, architecture, limitations, closing.
-- **Three test images to predict (have them ready in a folder):**
-  1. A built-in sample (cat or ship — high-confidence success).
-  2. A real-world photo where the model still gets it right (lower confidence — illustrates domain gap softly).
-  3. *Optional:* an obvious failure (e.g., a deer photo predicted as horse) for the limitations section. If time runs short, drop this and just narrate over the confusion-matrix view.
-- **Pace:** target ~150 words per minute. The script is written tight — read at a natural pace; transitions between sections cover most of the slack.
-- **OBS / QuickTime tip:** record at 1080p, 30 fps. Loud, clear audio matters more than visual polish for grading.
-- **Cuts to keep an eye on:** the language-switch moment (1:50), the Grad-CAM reveal (2:15), the training-curves moment with the Stage 1→2 transition (3:00). Hold each for ~2 seconds so the viewer can register the visual.
+**Browser setup**
+- Use a clean profile with no extensions visible
+- Window size 1280×800 or 1440×900 (16:9-ish, plays well at 1080p)
+- Light or dark theme — pick one and stay consistent
+
+**Files to have ready in a `~/demo-images/` folder**
+1. Optional: a real-world cat or dog photo (~500×500), JPG, ready to drag into the upload area at 1:50
+2. Nothing else needed — the app's built-in samples cover the rest
+
+**OBS / QuickTime**
+- 1080p, 30 fps
+- Audio: built-in mic is fine if quiet room; otherwise a USB headset mic
+- Keep cursor visible (in OBS, "Capture cursor" on)
+- Do one full take, then re-record sections that need polish — don't try to cut mid-narration
+
+**Pacing tips**
+- Don't rush. The script is intentionally tight; reading at a normal pace lands at ~4 minutes
+- After the language-switch click (0:25), pause 1 second so the viewer's eye can register all the labels changed
+- After picking the sample (0:50), pause 1-2 seconds so the Top-3 bars and Grad-CAM are clearly visible before you start narrating
+- The model-picker switches on the Metrics page (3 of them) each take ~1 second; don't talk over them
+
+**If recording in Bahasa Indonesia instead**
+- Keep all the same actions
+- Translate the narration; the on-screen UI follows whichever language is selected at the moment of recording
