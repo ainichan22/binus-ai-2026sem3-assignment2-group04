@@ -80,7 +80,7 @@
 
 ### 本機後處理 EN (Claude + User)
 - [x] User 下載 trained `.ipynb` 覆蓋本機 `notebooks/03_transfer_learning_EN.ipynb`
-- [ ] User 從 Drive 下載 `transfer_mobilenet_v1.keras` 到本機 `models/`(被 `.gitignore` 擋住)
+- [x] User 從 Drive 下載 `transfer_mobilenet_v1.keras` 到本機 `models/`(被 `.gitignore` 擋住)
 - [x] Claude review 結果、commit + push EN
 
 ### 本機準備 ID (Claude)
@@ -93,13 +93,13 @@
   - 所有 print/plot title 翻成印尼文
 
 ### Colab 訓練 ID (User)
-- [ ] 上傳 `notebooks/03_transfer_learning_ID.ipynb` 到 Colab,Runtime → GPU (T4)
-- [ ] Restart & Run All(~3-5 分鐘,Cell 13/15 走 load 路徑,不重訓)
-- [ ] 確認 test accuracy = 0.8993(與 EN 一致,因為載同一個模型)
+- [x] 上傳 `notebooks/03_transfer_learning_ID.ipynb` 到 Colab,Runtime → GPU (T4)
+- [x] Restart & Run All — Cell 13/15/26 都走 load/skip 路徑,不重訓 / 不重存
+- [x] Test accuracy 0.8993 與 EN 一致 ✓
 
 ### 本機後處理 ID (Claude + User)
-- [ ] User 下載 trained `.ipynb` 覆蓋本機 `notebooks/03_transfer_learning_ID.ipynb`
-- [ ] Claude review、commit + push ID
+- [x] User 下載 trained `.ipynb` 覆蓋本機 `notebooks/03_transfer_learning_ID.ipynb`
+- [x] Claude review、commit + push ID
 
 ---
 
