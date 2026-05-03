@@ -159,7 +159,7 @@
 - [x] `02_hyperparameter_tuning_ID.ipynb`(隨 Phase 1C 完成)
 - [x] `03_transfer_learning_ID.ipynb`(隨 Phase 1B 完成)
 - [x] 全部 ID 版 Restart & Run All 跑通,含 cell outputs
-- [ ] 在 git root 建立 `glossary.md`(Project_Plan §5.1 詞彙對照表)— 報告期間補
+- [x] 在 git root 建立 `glossary.md`(Project_Plan §5.1 詞彙對照表)— 含 CIFAR class 名、架構/訓練/評估術語、所有保留英文 vs 翻譯印尼文的決策表
 - [x] commit + push
 
 ---
