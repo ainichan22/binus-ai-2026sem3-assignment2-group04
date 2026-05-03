@@ -154,11 +154,13 @@
 
 ## Phase 1D — Notebook ID 版翻譯 (3 × 30-60 min,本機)
 
-- [ ] 複製 `02_..._EN.ipynb` → `02_..._ID.ipynb`,翻譯所有 markdown cells(code 不動)
-- [ ] 複製 `03_..._EN.ipynb` → `03_..._ID.ipynb`,翻譯
-- [ ] 確認 ID 版 Restart & Run All 仍可跑通
-- [ ] 在 git root 建立 `glossary.md`(Project_Plan §5.1 詞彙對照表)
-- [ ] commit + push
+> 1A / 1B / 1C 的 ID 版已隨各 phase 一起做完(option C 模式),不用獨立做。
+
+- [x] `02_hyperparameter_tuning_ID.ipynb`(隨 Phase 1C 完成)
+- [x] `03_transfer_learning_ID.ipynb`(隨 Phase 1B 完成)
+- [x] 全部 ID 版 Restart & Run All 跑通,含 cell outputs
+- [ ] 在 git root 建立 `glossary.md`(Project_Plan §5.1 詞彙對照表)— 報告期間補
+- [x] commit + push
 
 ---
 
@@ -179,11 +181,15 @@
 - [x] `app/samples/make_samples.py` — 一次性 helper:從 HF datasets 抽 10 張 CIFAR-10 範例圖
 
 ### 2.2 本機 setup + 測試 (User)
-- [ ] `python -m venv .venv && source .venv/bin/activate && pip install -r app/requirements.txt`
-- [ ] `cd app/samples && python make_samples.py`(產生 10 張 PNG)
-- [ ] 回到 git root,`streamlit run app/app.py`
-- [ ] 確認:三頁都開得起來、語言切換正常、上傳一張圖能跑出 Top-3 + Grad-CAM
-- [ ] commit + push
+- [x] pyenv 3.11.11 venv(踩到 macOS pyenv `_lzma` 坑,`brew install xz` 後重編解決)
+- [x] `pip install -r app/requirements.txt`
+- [x] `cd app/samples && python make_samples.py` 產出 10 張 CIFAR PNG(已 commit)
+- [x] `streamlit run app/app.py`,三頁全部 OK
+- [x] 修了 Predict 的兩個性能問題:
+  - `model.predict()` 改成直接 call `model(batch)`(快 10-100×)
+  - 模型載入時加 warm-up,grad_model 用 `@st.cache_resource` 快取
+  - 修了 Keras 3 Functional model 對 nested sub-model 內部 layer 的限制(grad_cam 改成兩段 forward)
+- [x] commit + push
 
 ---
 
@@ -201,13 +207,16 @@
 
 ## Phase 3B — HF Spaces 部署 (Week 3 上半,~2 hr)
 
-- [ ] 在 [huggingface.co](https://huggingface.co) 建立 Space(Streamlit、CPU Basic)
-- [ ] `git clone` Space repo
-- [ ] 複製 `app/` 全部內容 + `models/transfer_mobilenet_v1.keras` + `samples/`
-- [ ] 編 Space `README.md` YAML front matter(`title`、`emoji`、`sdk: streamlit`、`sdk_version`、`app_file: app.py`)
-- [ ] `git push origin main`,等 build(5-10 min)
-- [ ] 線上煙霧測試:三頁、語言切換、Grad-CAM、上傳預測都通
-- [ ] 把 Space URL 寫入主 repo `README.md`
+> HF Spaces 把 Streamlit 從一級 SDK 移除了,Streamlit app 現在走 **Docker SDK**。
+
+- [x] 建立 Space:`ainichan/binus-ai-2026sem3-assignment2-group04`,Docker SDK,CPU basic (free)
+- [x] 本機新增 4 個部署檔(`Dockerfile` / 根層 `requirements.txt` / `.dockerignore` / 改 `README.md` 加 HF YAML frontmatter)
+- [x] `git remote add hf https://huggingface.co/spaces/ainichan/...`
+- [x] `git push hf main --force`(蓋掉 HF template 預設檔)
+- [x] 在 HF UI **Upload files** 上傳 4 個 model artifact(轉 model + 3 個 history.pkl,`.gitignore` 擋住沒進 push)
+- [x] 等 Docker build(~5-10 分鐘)
+- [x] 線上煙霧測試:Sample predict OK
+- [x] 寫 Space URL 進主 repo `README.md` 取代 `_TBD_`
 
 ---
 

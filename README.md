@@ -17,7 +17,7 @@ short_description: VGG-style baseline + MobileNetV2 transfer learning, EN/ID UI
 
 Course: Machine Learning (LO 3) — Team Assignment 2
 
-Live demo (Hugging Face Spaces): _TBD_
+Live demo (Hugging Face Spaces): **<https://huggingface.co/spaces/ainichan/binus-ai-2026sem3-assignment2-group04>**
 
 ---
 
