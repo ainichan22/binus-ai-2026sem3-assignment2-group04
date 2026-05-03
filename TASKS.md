@@ -69,20 +69,37 @@
   - §12: save `transfer_mobilenet_v1.keras` + history pickle 到 Drive
 - [x] commit + push
 
-### Colab 訓練 (User)
-- [ ] 上傳 `notebooks/03_transfer_learning_EN.ipynb` 到 Colab,Runtime → GPU (T4)
-- [ ] Restart & Run All(預計 30-60 分鐘,大部分時間在 Stage 2 fine-tune)
-- [ ] 確認:
-  - Cell 9 sanity check:Pixel range 約在 [-1, 1]
-  - Stage 1 結束 val acc ≈ 88-90%
-  - Stage 2 結束 val acc ≈ 92-94%
-  - Test accuracy ≥ 90%(超過 baseline 的 0.8735)
-  - Drive `models/` 出現 `transfer_mobilenet_v1.keras` 與 `transfer_mobilenet_v1_history.pkl`
+### Colab 訓練 EN (User)
+- [x] 上傳 `notebooks/03_transfer_learning_EN.ipynb` 到 Colab,Runtime → GPU (T4)
+- [x] Restart & Run All,實際結果:
+  - Cell 9 sanity check: pixel range = [-1.000, 1.000] ✓
+  - Stage 1: 6 epochs(EarlyStopping triggered),best val acc 0.8344
+  - Stage 2: 20 epochs full,best val acc 0.9022
+  - **Test accuracy = 0.8993**(超過 baseline 0.8735,~+2.6 pp)
+  - Drive `models/`: `transfer_mobilenet_v1.keras` (21.9 MB) + `transfer_mobilenet_v1_history.pkl`
 
-### 本機後處理 (Claude + User)
-- [ ] User 下載 trained `.ipynb` 到本機 `notebooks/`(命名為 `03_transfer_learning_EN.ipynb`)
+### 本機後處理 EN (Claude + User)
+- [x] User 下載 trained `.ipynb` 覆蓋本機 `notebooks/03_transfer_learning_EN.ipynb`
 - [ ] User 從 Drive 下載 `transfer_mobilenet_v1.keras` 到本機 `models/`(被 `.gitignore` 擋住)
-- [ ] Claude review 結果、commit + push
+- [x] Claude review 結果、commit + push EN
+
+### 本機準備 ID (Claude)
+- [x] 建立 `notebooks/03_transfer_learning_ID.ipynb`(27 cells),特點:
+  - Markdown 全部翻譯成印尼文(Bagian 0-12),class_names 用印尼文
+  - **Option C 模式**:Cell 13 載入 EN 訓練好的 `transfer_mobilenet_v1.keras` + history pickle,跳過 Stage 1 + Stage 2
+  - Cell 13 內含 `STAGE1_EPOCHS = 6`(從 EN run 讀來),把 combined history 拆回 stage1/stage2 stub 讓 Cell 17 的 boundary line 畫對
+  - Cell 15 `MODEL_LOADED=True` 時印 skip 訊息;`False` 時走原本 fine-tune 流程(fallback)
+  - Cell 26 `MODEL_LOADED=True` 時不存(避免覆寫 EN 產出);`False` 時 fallback save
+  - 所有 print/plot title 翻成印尼文
+
+### Colab 訓練 ID (User)
+- [ ] 上傳 `notebooks/03_transfer_learning_ID.ipynb` 到 Colab,Runtime → GPU (T4)
+- [ ] Restart & Run All(~3-5 分鐘,Cell 13/15 走 load 路徑,不重訓)
+- [ ] 確認 test accuracy = 0.8993(與 EN 一致,因為載同一個模型)
+
+### 本機後處理 ID (Claude + User)
+- [ ] User 下載 trained `.ipynb` 覆蓋本機 `notebooks/03_transfer_learning_ID.ipynb`
+- [ ] Claude review、commit + push ID
 
 ---
 
