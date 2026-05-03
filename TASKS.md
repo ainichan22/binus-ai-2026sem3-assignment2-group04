@@ -40,8 +40,9 @@
   - **test accuracy = 0.8735**(超過 85% 目標)
   - Drive `models/` 出現 `baseline_v1.keras` (6.7 MB) 與 `baseline_v1_history.pkl`
   - 註:多倫多 mirror 停電,Cell 5 改用 `datasets.load_dataset("cifar10")`(HF)
-- [ ] 上傳 `notebooks/01_baseline_ID.ipynb` 到 Colab(已同步套用 HF 資料載入,可直接跑)
-- [ ] ID: Restart & Run All — 只為了讓 ID notebook 有 cell outputs,不會碰到 keras 檔
+- [ ] 上傳 `notebooks/01_baseline_ID.ipynb` 到 Colab(已套用 HF 資料載入 + Section 7 從 Drive 載入 EN 訓練好的 `baseline_v1.keras`,跳過重訓)
+- [ ] ID: Restart & Run All(~3-5 分鐘)— Section 7 載模型,Section 8-11+14 真的執行,自然產生印尼文 outputs 與 figures
+- [ ] 上傳前確認 Drive 裡 `models/baseline_v1.keras` 與 `baseline_v1_history.pkl` 都在(EN 跑完已寫入)
 
 ### 本機後處理 (Claude + User)
 - [x] User 從 Colab 下載 EN `.ipynb` 覆蓋本機 `notebooks/01_baseline_EN.ipynb`
