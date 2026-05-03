@@ -34,18 +34,21 @@
 - [x] commit + push 修改
 
 ### Colab 訓練 (User)
-- [ ] 上傳 `notebooks/01_baseline_EN.ipynb` 到 Colab,Runtime → GPU (T4)
-- [ ] EN: Restart & Run All(~20 分鐘),確認:
+- [x] 上傳 `notebooks/01_baseline_EN.ipynb` 到 Colab,Runtime → GPU (T4)
+- [x] EN: Restart & Run All,確認:
   - Drive 掛載成功、GPU 可見
-  - test accuracy ≈ 85%
-  - Drive `models/` 出現 `baseline_v1.keras` 與 `baseline_v1_history.pkl`
-- [ ] EN 跑完之後,上傳 `notebooks/01_baseline_ID.ipynb` 到 Colab(可同 session)
-- [ ] ID: Restart & Run All(~20 分鐘)— 只為了讓 ID notebook 有 cell outputs,不會碰到 keras 檔
+  - **test accuracy = 0.8735**(超過 85% 目標)
+  - Drive `models/` 出現 `baseline_v1.keras` (6.7 MB) 與 `baseline_v1_history.pkl`
+  - 註:多倫多 mirror 停電,Cell 5 改用 `datasets.load_dataset("cifar10")`(HF)
+- [ ] 上傳 `notebooks/01_baseline_ID.ipynb` 到 Colab(已同步套用 HF 資料載入,可直接跑)
+- [ ] ID: Restart & Run All — 只為了讓 ID notebook 有 cell outputs,不會碰到 keras 檔
 
 ### 本機後處理 (Claude + User)
-- [ ] User 從 Colab 下載 EN/ID 兩份 `.ipynb` 覆蓋本機 `notebooks/`
-- [ ] User 從 Drive 下載 `baseline_v1.keras` 到本機 `models/`
-- [ ] Claude 檢查結果、commit + push notebooks
+- [x] User 從 Colab 下載 EN `.ipynb` 覆蓋本機 `notebooks/01_baseline_EN.ipynb`
+- [ ] User 從 Colab 下載 ID `.ipynb` 覆蓋本機 `notebooks/01_baseline_ID.ipynb`(等 ID 跑完)
+- [ ] User 從 Drive 下載 `baseline_v1.keras` 到本機 `models/`(被 `.gitignore` 擋住,不進 repo)
+- [x] Claude review EN 結果、commit + push EN(trained outputs)+ ID 的 HF cell 同步
+- [ ] Claude commit + push ID 跑完的版本(等 ID 跑完)
 
 ---
 
