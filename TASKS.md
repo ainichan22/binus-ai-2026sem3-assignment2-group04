@@ -201,8 +201,9 @@
 - [x] EN 在 Colab 跑完並下載:**overall accuracy 0.8667 (26/30),domain gap -3.26 pp**
 - [x] 三個 artifact 進 repo:`realworld_results.csv`、`realworld-failures.png`、`realworld-per-class.png`
 - [x] 建立 `04_realworld_testing_ID.ipynb`(option C:讀 CSV + 印尼文 plot/labels;沒 CSV 時 fallback 跑完整 inference)
-- [ ] User 上傳 ID notebook 到 Colab Run All,下載回來給我 land
+- [x] User 上傳 ID notebook 到 Colab Run All — 走 CSV-load path,生成印尼文表格 / 失敗 grid / bar chart
 - [x] commit + push EN 結果 + 報告 ch.8 改寫(EN/ID 兩份都填好實際數據)
+- [x] Land trained ID notebook
 
 ---
 
