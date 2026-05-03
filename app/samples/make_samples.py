@@ -17,10 +17,10 @@ CLASS_NAMES = ["airplane", "automobile", "bird", "cat", "deer",
 
 
 def main():
-    try:
-        import datasets
-    except ImportError:
-        raise SystemExit("`datasets` not installed. Run: pip install datasets")
+    # Let any import error surface with its full traceback — common causes
+    # are wrong Python (no _lzma → pyenv built without xz) or a partial
+    # pip install. A swallowed ImportError tells you nothing.
+    import datasets
 
     print("Downloading CIFAR-10 test split via Hugging Face...")
     ds = datasets.load_dataset("cifar10", split="test")
