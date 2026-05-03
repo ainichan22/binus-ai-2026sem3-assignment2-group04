@@ -37,8 +37,13 @@ EXPOSE 7860
 #   - bind 0.0.0.0 so the container is reachable
 #   - headless=true skips opening a browser
 #   - enableCORS=false avoids the embed warning page
+#   - enableXsrfProtection=false: HF Spaces serves the app inside an
+#     iframe, which Streamlit's default XSRF check treats as a cross-
+#     site POST and blocks file uploads with HTTP 403. Safe to disable
+#     for a public stateless demo.
 CMD ["streamlit", "run", "app/app.py", \
      "--server.port=7860", \
      "--server.address=0.0.0.0", \
      "--server.headless=true", \
-     "--server.enableCORS=false"]
+     "--server.enableCORS=false", \
+     "--server.enableXsrfProtection=false"]
