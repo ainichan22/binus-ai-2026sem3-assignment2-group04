@@ -55,14 +55,34 @@
 
 ## Phase 1B — Transfer Learning (1-2 hr,Colab)
 
-- [ ] Drive 建立 `03_transfer_learning_EN.ipynb`,套用開頭模板
-- [ ] 寫資料 pipeline:CIFAR-10 → resize 96×96 → `mobilenet_v2.preprocess_input`
-- [ ] **Stage 1(凍結)**:`MobileNetV2(include_top=False, weights="imagenet")` + GAP + Dropout(0.3) + Dense(10);`trainable=False`,10 epochs,lr=1e-3
-- [ ] **Stage 2(fine-tune)**:解凍最後 30 層,lr=1e-5,20 epochs;加 `ModelCheckpoint`
-- [ ] 評估 test set(目標 ≥ 90%);畫訓練曲線、混淆矩陣 → 存 `report/figures/`
-- [ ] 存 `transfer_mobilenet_v1.keras` + history pickle 到 Drive `models/`
-- [ ] 下載 `.ipynb` 到本機 `notebooks/`、模型到本機 `models/`
-- [ ] commit + push
+### 本機準備 (Claude)
+- [x] 建立 `notebooks/03_transfer_learning_EN.ipynb`(27 cells)涵蓋:
+  - Cell 0: Drive mount + paths
+  - §0-2: setup, HF data load, stratified split(沿用 baseline 的 `SEED=42` 確保 val set 一致可比)
+  - §3: tf.data pipeline(resize 32→96 + `preprocess_input` + 輕度 augmentation)
+  - §4: MobileNetV2 backbone + GAP + Dropout(0.3) + Dense(10);`training=False` 鎖 BN
+  - §5 Stage 1: 凍結 backbone,10 epochs,Adam lr=1e-3
+  - §6 Stage 2: 解凍最後 30 層(BN 仍鎖),20 epochs,Adam lr=1e-5,加 ReduceLROnPlateau
+  - §7: 合併 stage1+stage2 history 畫雙階段曲線
+  - §8-10: test eval、confusion matrix、top-9 misclass
+  - §11: 與 baseline 對比討論
+  - §12: save `transfer_mobilenet_v1.keras` + history pickle 到 Drive
+- [x] commit + push
+
+### Colab 訓練 (User)
+- [ ] 上傳 `notebooks/03_transfer_learning_EN.ipynb` 到 Colab,Runtime → GPU (T4)
+- [ ] Restart & Run All(預計 30-60 分鐘,大部分時間在 Stage 2 fine-tune)
+- [ ] 確認:
+  - Cell 9 sanity check:Pixel range 約在 [-1, 1]
+  - Stage 1 結束 val acc ≈ 88-90%
+  - Stage 2 結束 val acc ≈ 92-94%
+  - Test accuracy ≥ 90%(超過 baseline 的 0.8735)
+  - Drive `models/` 出現 `transfer_mobilenet_v1.keras` 與 `transfer_mobilenet_v1_history.pkl`
+
+### 本機後處理 (Claude + User)
+- [ ] User 下載 trained `.ipynb` 到本機 `notebooks/`(命名為 `03_transfer_learning_EN.ipynb`)
+- [ ] User 從 Drive 下載 `transfer_mobilenet_v1.keras` 到本機 `models/`(被 `.gitignore` 擋住)
+- [ ] Claude review 結果、commit + push
 
 ---
 
