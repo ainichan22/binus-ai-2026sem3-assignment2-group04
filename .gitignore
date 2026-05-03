@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Trained model weights — distributed via HF Spaces / Drive instead
+models/*.keras
+models/*.h5
+models/*.pkl
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# Keras Tuner search artifacts (regenerable)
+keras_tuner/
