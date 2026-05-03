@@ -10,32 +10,75 @@ import tensorflow as tf
 DEFAULT_LAYER = "Conv_1"
 
 
-def _resolve_target_layer(model: tf.keras.Model, layer_name: str = DEFAULT_LAYER):
-    """The transfer-learning model wraps MobileNetV2 as a sub-model, so
-    we search both top-level layers and the immediate sub-models."""
+def _find_target(model: tf.keras.Model, layer_name: str):
+    """Locate the target layer. Returns (target_layer, submodel_or_None).
+    If the target is at the outer model's top level, submodel is None;
+    if it's inside a nested sub-model (e.g. the MobileNetV2 backbone),
+    submodel is that wrapper."""
     for layer in model.layers:
         if layer.name == layer_name:
-            return layer
+            return layer, None
     for layer in model.layers:
         if isinstance(layer, tf.keras.Model):
             try:
-                return layer.get_layer(layer_name)
+                return layer.get_layer(layer_name), layer
             except (ValueError, KeyError):
                 continue
     raise ValueError(f"Could not find layer named {layer_name!r} in model")
 
 
 @st.cache_resource(show_spinner=False)
-def _build_grad_model(_model: tf.keras.Model, layer_name: str):
-    """Cached: build the (target-conv, predictions) sub-model exactly once
-    per session. The leading underscore on `_model` tells Streamlit not
-    to hash the argument — model identity is stable because it comes
-    from a @st.cache_resource loader."""
-    target_layer = _resolve_target_layer(_model, layer_name)
-    return tf.keras.Model(
-        inputs=_model.inputs,
-        outputs=[target_layer.output, _model.output],
+def _build_grad_fn(_model: tf.keras.Model, layer_name: str):
+    """Build a callable that, given an input batch, returns
+    (target_conv_output, predictions). Cached per session.
+
+    Keras 3 refuses to build a Functional `tf.keras.Model(inputs, outputs)`
+    when one of the outputs lives inside a nested sub-model — there's no
+    direct symbolic path from the outer input to that intermediate
+    tensor. Workaround: build an inner Functional model that runs from
+    the sub-model's input to (target output, sub-model output), then
+    finish the forward pass by manually applying the outer model's head
+    layers.
+
+    The leading underscore on `_model` tells Streamlit to skip hashing
+    the model arg; identity is stable because the caller comes from
+    another @st.cache_resource loader."""
+    target_layer, submodel = _find_target(_model, layer_name)
+
+    if submodel is None:
+        # Simple case: target is at the outer-model top level.
+        grad_model = tf.keras.Model(
+            inputs=_model.inputs,
+            outputs=[target_layer.output, _model.output],
+        )
+
+        def forward(x):
+            return grad_model(x, training=False)
+        return forward
+
+    # Hard case: target is inside a sub-model. Build inner extractor
+    # then walk the outer head manually.
+    inner = tf.keras.Model(
+        inputs=submodel.inputs,
+        outputs=[target_layer.output, submodel.output],
     )
+
+    head_layers = []
+    seen_submodel = False
+    for layer in _model.layers:
+        if layer is submodel:
+            seen_submodel = True
+            continue
+        if seen_submodel and not isinstance(layer, tf.keras.layers.InputLayer):
+            head_layers.append(layer)
+
+    def forward(x):
+        conv_out, sub_out = inner(x, training=False)
+        h = sub_out
+        for layer in head_layers:
+            h = layer(h, training=False)
+        return conv_out, h
+    return forward
 
 
 def grad_cam(
@@ -60,10 +103,10 @@ def grad_cam(
     if image.ndim == 3:
         image = np.expand_dims(image, 0)
 
-    grad_model = _build_grad_model(model, layer_name)
+    forward = _build_grad_fn(model, layer_name)
 
     with tf.GradientTape() as tape:
-        conv_out, preds = grad_model(image, training=False)
+        conv_out, preds = forward(image)
         loss = preds[:, class_idx]
 
     grads = tape.gradient(loss, conv_out)
