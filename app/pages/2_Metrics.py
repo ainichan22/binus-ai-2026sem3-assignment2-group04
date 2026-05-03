@@ -28,6 +28,7 @@ st.title(t("metrics.title"))
 # Section 9 and notebooks/03_transfer_learning_EN Section 8 outputs).
 SUMMARY = {
     "baseline": {"test_acc": 0.8735, "test_loss": 0.5291, "params": "~570 K", "epochs": 50},
+    "tuned":    {"test_acc": 0.8689, "test_loss": 0.5164, "params": "551,722", "epochs": 50},
     "transfer": {"test_acc": 0.8993, "test_loss": 0.2971, "params": "~1.52 M", "epochs": 26},
 }
 
@@ -43,6 +44,18 @@ PER_CLASS = {
         ("horse",      0.9051, 0.9160, 0.9105),
         ("ship",       0.9447, 0.9220, 0.9332),
         ("truck",      0.8508, 0.9580, 0.9012),
+    ],
+    "tuned": [
+        ("airplane",   0.8765, 0.8870, 0.8817),
+        ("automobile", 0.9183, 0.9560, 0.9368),
+        ("bird",       0.8374, 0.8140, 0.8256),
+        ("cat",        0.7942, 0.7100, 0.7497),
+        ("deer",       0.8364, 0.8740, 0.8548),
+        ("dog",        0.8638, 0.7610, 0.8091),
+        ("frog",       0.8250, 0.9380, 0.8779),
+        ("horse",      0.8970, 0.9060, 0.9015),
+        ("ship",       0.9568, 0.9070, 0.9312),
+        ("truck",      0.8830, 0.9360, 0.9087),
     ],
     "transfer": [
         ("airplane",   0.9191, 0.8980, 0.9084),
@@ -60,21 +73,24 @@ PER_CLASS = {
 
 HISTORY_PATHS = {
     "baseline": APP_DIR.parent / "models" / "baseline_v1_history.pkl",
+    "tuned":    APP_DIR.parent / "models" / "baseline_tuned_v2_history.pkl",
     "transfer": APP_DIR.parent / "models" / "transfer_mobilenet_v1_history.pkl",
 }
 
 CONFUSION_FIGS = {
     "baseline": APP_DIR.parent / "report" / "figures" / "confusion-matrix-baseline.png",
+    "tuned":    APP_DIR.parent / "report" / "figures" / "confusion-matrix-tuned.png",
     "transfer": APP_DIR.parent / "report" / "figures" / "confusion-matrix-transfer.png",
 }
 
 
 # Model picker
 options = {
-    "Baseline (VGG-style, from scratch)":     "baseline",
-    "Transfer (MobileNetV2 fine-tuned)":      "transfer",
+    "Baseline (VGG-style, from scratch)":      "baseline",
+    "Tuned baseline (Hyperband HP search)":    "tuned",
+    "Transfer (MobileNetV2 fine-tuned)":       "transfer",
 }
-choice_label = st.selectbox(t("metrics.model_picker"), list(options.keys()), index=1)
+choice_label = st.selectbox(t("metrics.model_picker"), list(options.keys()), index=2)
 choice = options[choice_label]
 
 
@@ -88,13 +104,19 @@ c3.metric("Params",        s["params"])
 c4.metric("Epochs",        s["epochs"])
 
 
-# Side-by-side comparison table (always shows both models)
+# Side-by-side comparison table (always shows all three models)
 st.subheader(t("metrics.compare_header"))
 compare = pd.DataFrame({
-    "Model": ["baseline_v1", "transfer_mobilenet_v1"],
-    "Test accuracy": [SUMMARY["baseline"]["test_acc"], SUMMARY["transfer"]["test_acc"]],
-    "Trainable params": [SUMMARY["baseline"]["params"], SUMMARY["transfer"]["params"]],
-    "Epochs": [SUMMARY["baseline"]["epochs"], SUMMARY["transfer"]["epochs"]],
+    "Model": ["baseline_v1", "baseline_tuned_v2", "transfer_mobilenet_v1"],
+    "Test accuracy": [SUMMARY["baseline"]["test_acc"],
+                       SUMMARY["tuned"]["test_acc"],
+                       SUMMARY["transfer"]["test_acc"]],
+    "Trainable params": [SUMMARY["baseline"]["params"],
+                          SUMMARY["tuned"]["params"],
+                          SUMMARY["transfer"]["params"]],
+    "Epochs": [SUMMARY["baseline"]["epochs"],
+                SUMMARY["tuned"]["epochs"],
+                SUMMARY["transfer"]["epochs"]],
 })
 st.dataframe(compare, width="stretch", hide_index=True)
 

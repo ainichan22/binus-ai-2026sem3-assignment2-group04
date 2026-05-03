@@ -121,24 +121,31 @@
 - [ ] commit + push
 
 ### Colab 訓練 EN (User)
-- [ ] 上傳 `notebooks/02_hyperparameter_tuning_EN.ipynb` 到 Colab,Runtime → GPU (T4)
-- [ ] Restart & Run All — 預計 **1.5-2 hr 搜尋 + 30 min 重訓**(總 2-2.5 hr)
-- [ ] 中途若 Colab 斷線,直接重跑 cell 13;Hyperband 從 Drive `keras_tuner/` 續跑不會重來
-- [ ] 確認:
-  - `best_hp.json` 出現在 Drive
-  - Tuned baseline test accuracy(應該 0.88-0.90,介於 baseline 0.8735 與 transfer 0.8993 之間)
-  - Drive `models/` 出現 `baseline_tuned_v2.keras` + history.pkl
+- [x] 上傳 `notebooks/02_hyperparameter_tuning_EN.ipynb` 到 Colab,Runtime → GPU (T4)
+- [x] Restart & Run All — 實際:**search 57 分鐘 + retrain 50 epochs ~30 分鐘**
+- [x] 結果:
+  - `best_hp.json`:lr=6.68e-4、optimizer=adam、dropout=0.1/0.4/0.4、wd=1.4e-4、dense_units=128
+  - **Tuned baseline test acc = 0.8689**(比 hand-tuned 0.8735 略低 0.46 pp,落在 noise 範圍內 — hand-tuned HP 已近最佳值)
+  - Drive `models/` 出現 `baseline_tuned_v2.keras` (6.74 MB) + history.pkl + best_hp.json
 
 ### 本機後處理 EN (Claude + User)
-- [ ] User 下載 trained `.ipynb` 覆蓋本機 `notebooks/02_hyperparameter_tuning_EN.ipynb`
-- [ ] User 從 Drive 下載 `baseline_tuned_v2.keras` + `best_hp.json` + history.pkl 到本機 `models/`
-- [ ] Claude review、commit + push
+- [x] User 下載 trained `.ipynb` 覆蓋本機 `notebooks/02_hyperparameter_tuning_EN.ipynb`
+- [ ] User 從 Drive 下載 `baseline_tuned_v2.keras` + `best_hp.json` + history.pkl 到本機 `models/`(Metrics 頁要讀 history.pkl,沒這個會 warning)
+- [x] Claude review、commit + push EN
+- [x] 抽出 trained 圖片(cm / top9 misclass / training history)到 `report/figures/`
+- [x] 更新 `app/pages/2_Metrics.py` 加入 tuned baseline 第三選項
 
-### 本機準備 ID (Claude,跟 1B 模式一樣)
-- [ ] 建立 `notebooks/02_hyperparameter_tuning_ID.ipynb`(option C:載入 EN 跑出來的 `baseline_tuned_v2.keras` 跳過搜尋與重訓,印尼文 markdown / class_names / prints)
+### 本機準備 ID (Claude)
+- [x] 建立 `notebooks/02_hyperparameter_tuning_ID.ipynb`(30 cells,option C):
+  - Cell 13 偵測 `best_hp.json` 存在 → 跳過 Hyperband search;不存在 → fallback 跑 search
+  - Cell 17 偵測 `baseline_tuned_v2.keras` + history.pkl → 跳過 50-epoch retrain;不存在 → fallback 跑 fit
+  - Cell 29 偵測 → 跳過 save;不存在 → fallback save
+  - 全部 markdown 翻成印尼文,class_names 用印尼文,plot title/cm label 印尼文
+- [x] commit + push
 
 ### Colab 訓練 ID (User)
 - [ ] 上傳 ID notebook,Run All(~3-5 分鐘 — 純 load + eval)
+- [ ] 確認 test accuracy = 0.8689 與 EN 一致
 
 ### 本機後處理 ID
 - [ ] User 下載 trained `.ipynb`、Claude commit + push
