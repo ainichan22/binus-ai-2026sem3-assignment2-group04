@@ -96,7 +96,7 @@ compare = pd.DataFrame({
     "Trainable params": [SUMMARY["baseline"]["params"], SUMMARY["transfer"]["params"]],
     "Epochs": [SUMMARY["baseline"]["epochs"], SUMMARY["transfer"]["epochs"]],
 })
-st.dataframe(compare, use_container_width=True, hide_index=True)
+st.dataframe(compare, width="stretch", hide_index=True)
 
 
 # Training curves (loaded from history pickle)
@@ -123,13 +123,13 @@ else:
 # Per-class report
 st.subheader(t("metrics.classification_report_header"))
 df = pd.DataFrame(PER_CLASS[choice], columns=["Class", "Precision", "Recall", "F1"])
-st.dataframe(df, use_container_width=True, hide_index=True)
+st.dataframe(df, width="stretch", hide_index=True)
 
 
 # Confusion matrix (static figure for baseline; transfer has it inside the notebook)
 st.subheader(t("metrics.confusion_matrix_header"))
 fig_path = CONFUSION_FIGS.get(choice)
 if fig_path and fig_path.exists():
-    st.image(str(fig_path), use_container_width=True)
+    st.image(str(fig_path), width="stretch")
 else:
     st.warning(f"Confusion matrix figure not found at {fig_path}.")

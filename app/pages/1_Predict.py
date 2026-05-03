@@ -84,7 +84,7 @@ with st.spinner(t("predict.processing")):
 # Display: image left, top-3 right
 col1, col2 = st.columns([1, 1])
 with col1:
-    st.image(arr, caption=f"{arr.shape[1]}×{arr.shape[0]}", use_container_width=True)
+    st.image(arr, caption=f"{arr.shape[1]}×{arr.shape[0]}", width="stretch")
 
 with col2:
     st.subheader(t("predict.top3_header"))
@@ -102,7 +102,7 @@ top1_idx = int(top3_idx[0])
 preprocessed = preprocess_for_model(arr)
 heatmap = grad_cam(model, preprocessed, top1_idx)
 overlay = overlay_heatmap(arr, heatmap, alpha=0.45)
-st.image(overlay, caption=f"Grad-CAM → {class_names[top1_idx]}", use_container_width=True)
+st.image(overlay, caption=f"Grad-CAM → {class_names[top1_idx]}", width="stretch")
 
 
 st.caption(t("predict.disclaimer"))
