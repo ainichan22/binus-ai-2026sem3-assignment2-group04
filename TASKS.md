@@ -195,13 +195,14 @@
 
 ## Phase 3A — 真實圖片測試 (Week 3 上半,~3-5 hr)
 
-- [ ] 蒐集 30+ 張外部圖片(每類 ≥ 3,Unsplash/Pexels/Google,避免 CIFAR 原圖與 AI 生成圖)
-- [ ] 分類整理到 `test_images/<class>/`
-- [ ] 建立 `04_realworld_testing_EN.ipynb`:批次預測函式 → 輸出 DataFrame(檔名、真實類別、Top-3、Top-1 信心、是否正確)
-- [ ] 計算整體準確率、per-class 準確率、列出全部失敗案例
-- [ ] 失敗案例視覺化(grid + 真值/預測標註)→ 存 `report/figures/`
-- [ ] 翻譯成 `04_realworld_testing_ID.ipynb`
-- [ ] commit + push
+- [x] 蒐集 30 張外部圖片(每類 3 張,共 10 類,Unsplash/Pexels/Google,排除 CIFAR 原圖與 AI 生成圖)
+- [x] 分類整理到 `test_images/<class>/`,連同 `_contact_sheet.png` 一併 commit
+- [x] 建立 `04_realworld_testing_EN.ipynb`(Colab-first,自動偵測 test_images 位置)
+- [x] EN 在 Colab 跑完並下載:**overall accuracy 0.8667 (26/30),domain gap -3.26 pp**
+- [x] 三個 artifact 進 repo:`realworld_results.csv`、`realworld-failures.png`、`realworld-per-class.png`
+- [x] 建立 `04_realworld_testing_ID.ipynb`(option C:讀 CSV + 印尼文 plot/labels;沒 CSV 時 fallback 跑完整 inference)
+- [ ] User 上傳 ID notebook 到 Colab Run All,下載回來給我 land
+- [x] commit + push EN 結果 + 報告 ch.8 改寫(EN/ID 兩份都填好實際數據)
 
 ---
 

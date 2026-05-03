@@ -262,9 +262,63 @@ The live deployment is at <https://huggingface.co/spaces/ainichan/binus-ai-2026s
 
 ## 8. Real-World Image Testing
 
-> **Status:** methodology defined; data collection and analysis are scheduled for the project's final iteration.
+### 8.1 Methodology
 
-The CIFAR-10 test set is drawn from the same low-resolution distribution as the training set. To assess model generalization beyond the training distribution, we will collect 30+ external images (≥3 per class) from public photo sources (Unsplash, Pexels, free Google Images results), explicitly excluding (a) CIFAR-10 originals and obvious derivatives and (b) AI-generated images. Each external image will be classified by the transfer-learning model and the top-3 predictions, top-1 confidence, and correctness recorded. Per-class accuracy and a failure-case grid will be reported, with particular attention to the *domain gap*: external photos are typically 200×200 pixels or larger, contain off-center subjects, complex backgrounds, and lighting that the 32×32-trained features have never directly encoded. The expected (and pedagogically intended) finding is that test accuracy will be visibly lower than on CIFAR's in-distribution test set even with transfer learning, and that domain adaptation is a separate problem from intra-distribution accuracy.
+The CIFAR-10 test set is drawn from the same low-resolution distribution as the training set. To measure how the model generalizes beyond that distribution we collected **30 external images** (3 per class, 10 classes) from public photo sources (Unsplash, Pexels, free Google Images results), explicitly excluding (a) CIFAR-10 originals and derivatives and (b) AI-generated images. Each image was classified by `transfer_mobilenet_v1.keras` after the same preprocessing pipeline used at training time (`center_crop_square → resize 96×96 → preprocess_input`); top-3 predictions, top-1 confidence, and correctness were recorded. The full per-image table lives at `report/realworld_results.csv`.
+
+### 8.2 Aggregate Results
+
+| Metric | Real-world (n=30) | CIFAR test (n=10 000) | Δ |
+|---|---|---|---|
+| Overall accuracy | **0.8667** (26 / 30) | 0.8993 | -3.26 pp |
+| Mean confidence — correct predictions | 0.967 | — | — |
+| Mean confidence — incorrect predictions | 0.671 | — | — |
+
+The model retains most of its CIFAR-test accuracy on out-of-distribution natural photos: the domain gap is **3.26 percentage points**, smaller than initially expected. ImageNet-pretrained features appear to generalize reasonably well to real-world inputs, partly because MobileNetV2's pretrained weights were learned on natural high-resolution photos in the first place — the model's intuition for "what a cat looks like" was never bound to 32×32 thumbnails alone.
+
+The confidence-calibration result is the most encouraging finding: when the model is wrong, it tends to know it is wrong. Mean confidence on incorrect predictions is 0.67, versus 0.97 on correct predictions. A simple confidence threshold around 0.85 would route most failures to "uncertain" — a useful property for production deployment.
+
+### 8.3 Per-Class Results
+
+![Per-class accuracy on 30 real-world images](figures/realworld-per-class.png)
+
+| Class | Real-world (n=3) | CIFAR-test F1 (transfer model) | Notes |
+|---|---|---|---|
+| automobile | 3 / 3 (100 %) | 0.95 | strong on both distributions |
+| bird | 3 / 3 (100 %) | 0.90 | CIFAR-weak class lifted by transfer learning, RW-perfect |
+| cat | 3 / 3 (100 %) | 0.80 | CIFAR-weakest class, RW-perfect |
+| dog | 3 / 3 (100 %) | 0.85 | similarly |
+| ship | 3 / 3 (100 %) | 0.94 | strong on both |
+| truck | 3 / 3 (100 %) | 0.92 | strong on both |
+| airplane | 2 / 3 (67 %) | 0.91 | one failure: `airplane_01` → bird |
+| deer | 2 / 3 (67 %) | 0.88 | one failure: `deer_01` → bird |
+| frog | 2 / 3 (67 %) | 0.92 | one failure: `frog_02` → bird |
+| horse | 2 / 3 (67 %) | 0.92 | one failure: `horse_03` → deer |
+
+A counter-intuitive pattern: classes the CIFAR test set marked as *weakest* (cat, dog, bird) all achieved 100 % real-world accuracy here, while several CIFAR-strong classes (airplane, deer, frog, horse) each missed exactly once. The obvious caveat: **at 3 images per class, per-class accuracy has very wide confidence intervals** — a 2 / 3 observation is consistent with population accuracy anywhere from ~10 % to ~99 %. The aggregate 26 / 30 number is the only one with meaningful resolution; per-class observations should be read as illustrative rather than statistically conclusive.
+
+### 8.4 Failure Modes
+
+![Real-world failures grid](figures/realworld-failures.png)
+
+The four failure cases reveal a single dominant pattern: **three of four wrong predictions chose `bird`**, and the fourth chose `deer`.
+
+| File | True | Predicted | Confidence | Top-3 |
+|---|---|---|---|---|
+| `airplane_01.jpg` | airplane | **bird** | 0.51 | bird → airplane → cat |
+| `deer_01.jpg` | deer | **bird** | 0.54 | bird → deer → cat |
+| `frog_02.jpg` | frog | **bird** | 0.74 | bird → ship → dog |
+| `horse_03.jpg` | horse | **deer** | 0.90 | deer → horse → bird |
+
+Three of four failures land in a 0.51–0.74 confidence band — classic "uncertain" output where the top-2 are nearly tied. `airplane_01 → bird` and `deer_01 → bird` are essentially coin flips between the correct and predicted class (0.51 / 0.48 and 0.54 / 0.46 respectively). The bird-leaning bias on uncertain inputs may reflect a property of MobileNetV2's pretraining: ImageNet contains 59 bird species classes (of 1 000 total), so the bird feature subspace is large, and a non-canonical real-world photo may activate it more strongly than CIFAR's distribution would suggest.
+
+The single high-confidence error — `horse_03 → deer` at 0.90 confidence — is the most interesting failure. Horse–deer is one of the well-known difficult pairs in CIFAR-10 (both four-legged outdoor animals), and the high confidence indicates the model is confidently wrong here rather than merely uncertain. This is a genuine classification mistake, not a calibration issue.
+
+### 8.5 Implications for the Deployed Application
+
+The Streamlit Predict page already includes a disclaimer about the domain gap (visible at the bottom of the prediction view). Combined with the empirical finding that incorrect predictions are typically low-confidence, the existing Top-3 bar-chart UI is already well-suited to the calibration profile we observed: when the second and third options are close to the first, the user can read that ambiguity directly rather than receive a single overconfident assertion.
+
+For the report's broader narrative: real-world accuracy of 86.67 % on 30 images is, with the sample-size caveat, a reasonable demonstration that ImageNet-pretrained features generalize past the original CIFAR distribution. It does *not* mean the model is robust in any production sense — the small sample, the curated source images, and the absence of adversarial conditions (occlusion, lighting variance, motion blur) all argue for further evaluation before any real deployment.
 
 ## 9. Conclusion and Future Work
 

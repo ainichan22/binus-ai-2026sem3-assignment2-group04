@@ -262,9 +262,63 @@ Deployment live di <https://huggingface.co/spaces/ainichan/binus-ai-2026sem3-ass
 
 ## 8. Pengujian Gambar Dunia Nyata
 
-> **Status:** metodologi didefinisikan; pengumpulan data dan analisis dijadwalkan untuk iterasi akhir proyek.
+### 8.1 Metodologi
 
-Test set CIFAR-10 diambil dari distribusi resolusi rendah yang sama dengan training set. Untuk menilai generalisasi model di luar distribusi training, kami akan mengumpulkan 30+ gambar eksternal (≥3 per kelas) dari sumber foto publik (Unsplash, Pexels, hasil pencarian gratis Google Images), secara eksplisit mengecualikan (a) CIFAR-10 asli dan turunan yang jelas dan (b) gambar yang dihasilkan AI. Setiap gambar eksternal akan diklasifikasikan oleh model transfer learning dan top-3 prediksi, top-1 confidence, serta correctness dicatat. Akurasi per kelas dan grid kasus kegagalan akan dilaporkan, dengan perhatian khusus pada *domain gap*: foto eksternal biasanya 200×200 pixel atau lebih besar, berisi subjek yang tidak terpusat, latar belakang kompleks, dan pencahayaan yang fitur-fitur 32×32-trained tidak pernah secara langsung mengencode-kan. Temuan yang diharapkan (dan secara pedagogis dimaksudkan) adalah bahwa akurasi tes akan terlihat lebih rendah dari pada test set in-distribution CIFAR bahkan dengan transfer learning, dan bahwa adaptasi domain adalah masalah yang terpisah dari akurasi intra-distribution.
+Test set CIFAR-10 diambil dari distribusi resolusi rendah yang sama dengan training set. Untuk mengukur bagaimana model menggeneralisasi di luar distribusi tersebut, kami mengumpulkan **30 gambar eksternal** (3 per kelas, 10 kelas) dari sumber foto publik (Unsplash, Pexels, hasil pencarian gratis Google Images), secara eksplisit mengecualikan (a) CIFAR-10 asli dan turunannya dan (b) gambar yang dihasilkan AI. Setiap gambar diklasifikasikan oleh `transfer_mobilenet_v1.keras` setelah pipeline preprocessing yang sama dengan training (`center_crop_square → resize 96×96 → preprocess_input`); top-3 prediksi, top-1 confidence, dan correctness dicatat. Tabel per-gambar lengkap berada di `report/realworld_results.csv`.
+
+### 8.2 Hasil Agregat
+
+| Metrik | Dunia nyata (n=30) | Test CIFAR (n=10 000) | Δ |
+|---|---|---|---|
+| Akurasi keseluruhan | **0,8667** (26 / 30) | 0,8993 | -3,26 pp |
+| Mean confidence — prediksi benar | 0,967 | — | — |
+| Mean confidence — prediksi salah | 0,671 | — | — |
+
+Model mempertahankan sebagian besar akurasi CIFAR-test-nya pada foto alami yang out-of-distribution: domain gap adalah **3,26 percentage points**, lebih kecil dari yang awalnya diharapkan. Fitur pretrained ImageNet tampak menggeneralisasi dengan cukup baik ke input dunia nyata, sebagian karena weight pretrained MobileNetV2 dipelajari pada foto resolusi tinggi alami sejak awal — intuisi model tentang "seperti apa kucing" tidak pernah terbatas pada thumbnail 32×32 saja.
+
+Hasil kalibrasi confidence adalah temuan yang paling menggembirakan: ketika model salah, ia cenderung tahu bahwa ia salah. Mean confidence pada prediksi salah adalah 0,67, dibanding 0,97 pada prediksi benar. Ambang confidence sederhana sekitar 0,85 akan mengarahkan sebagian besar kegagalan ke "tidak yakin" — properti yang berguna untuk deployment produksi.
+
+### 8.3 Hasil Per Kelas
+
+![Akurasi per kelas pada 30 gambar dunia nyata](figures/realworld-per-class.png)
+
+| Kelas | Dunia nyata (n=3) | F1 CIFAR-test (model transfer) | Catatan |
+|---|---|---|---|
+| mobil | 3 / 3 (100 %) | 0,95 | kuat di kedua distribusi |
+| burung | 3 / 3 (100 %) | 0,90 | kelas CIFAR-lemah yang diangkat transfer learning, RW-sempurna |
+| kucing | 3 / 3 (100 %) | 0,80 | kelas CIFAR-terlemah, RW-sempurna |
+| anjing | 3 / 3 (100 %) | 0,85 | sama |
+| kapal | 3 / 3 (100 %) | 0,94 | kuat di keduanya |
+| truk | 3 / 3 (100 %) | 0,92 | kuat di keduanya |
+| pesawat | 2 / 3 (67 %) | 0,91 | satu kegagalan: `airplane_01` → burung |
+| rusa | 2 / 3 (67 %) | 0,88 | satu kegagalan: `deer_01` → burung |
+| katak | 2 / 3 (67 %) | 0,92 | satu kegagalan: `frog_02` → burung |
+| kuda | 2 / 3 (67 %) | 0,92 | satu kegagalan: `horse_03` → rusa |
+
+Pola yang berlawanan dengan intuisi: kelas yang ditandai test set CIFAR sebagai *paling lemah* (kucing, anjing, burung) semuanya mencapai akurasi dunia nyata 100 % di sini, sementara beberapa kelas CIFAR-kuat (pesawat, rusa, katak, kuda) masing-masing meleset persis sekali. Caveat yang jelas: **pada 3 gambar per kelas, akurasi per-kelas memiliki interval kepercayaan yang sangat lebar** — observasi 2 / 3 konsisten dengan akurasi populasi di mana saja dari ~10 % hingga ~99 %. Angka agregat 26 / 30 adalah satu-satunya yang memiliki resolusi yang berarti; observasi per-kelas harus dibaca sebagai ilustratif alih-alih konklusif secara statistik.
+
+### 8.4 Mode Kegagalan
+
+![Grid kegagalan dunia nyata](figures/realworld-failures.png)
+
+Empat kasus kegagalan mengungkap satu pola dominan: **tiga dari empat prediksi salah memilih `burung`**, dan yang keempat memilih `rusa`.
+
+| File | Sebenarnya | Diprediksi | Confidence | Top-3 |
+|---|---|---|---|---|
+| `airplane_01.jpg` | pesawat | **burung** | 0,51 | burung → pesawat → kucing |
+| `deer_01.jpg` | rusa | **burung** | 0,54 | burung → rusa → kucing |
+| `frog_02.jpg` | katak | **burung** | 0,74 | burung → kapal → anjing |
+| `horse_03.jpg` | kuda | **rusa** | 0,90 | rusa → kuda → burung |
+
+Tiga dari empat kegagalan mendarat di pita confidence 0,51–0,74 — output "tidak pasti" klasik di mana top-2 hampir seimbang. `airplane_01 → burung` dan `deer_01 → burung` pada dasarnya adalah lemparan koin antara kelas yang benar dan yang diprediksi (0,51 / 0,48 dan 0,54 / 0,46 masing-masing). Bias condong-burung pada input yang tidak pasti mungkin mencerminkan properti pretraining MobileNetV2: ImageNet berisi 59 kelas spesies burung (dari total 1 000), jadi subspace fitur burung besar, dan foto dunia nyata yang non-kanonik mungkin mengaktifkannya lebih kuat dari yang disarankan distribusi CIFAR.
+
+Satu-satunya kesalahan high-confidence — `horse_03 → rusa` pada confidence 0,90 — adalah kegagalan yang paling menarik. Kuda-rusa adalah salah satu pasangan sulit yang dikenal di CIFAR-10 (keduanya hewan berkaki empat di luar ruangan), dan confidence tinggi mengindikasikan model salah dengan yakin di sini, bukan sekadar tidak pasti. Ini adalah kesalahan klasifikasi sungguhan, bukan masalah kalibrasi.
+
+### 8.5 Implikasi untuk Aplikasi yang Di-deploy
+
+Halaman Predict Streamlit sudah menyertakan disclaimer tentang domain gap (terlihat di bagian bawah tampilan prediksi). Dikombinasikan dengan temuan empiris bahwa prediksi yang salah biasanya ber-confidence rendah, UI bar-chart Top-3 yang ada sudah cocok dengan profil kalibrasi yang kami amati: ketika pilihan kedua dan ketiga dekat dengan yang pertama, pengguna dapat membaca ambiguitas itu langsung alih-alih menerima satu pernyataan over-confident.
+
+Untuk narasi laporan yang lebih luas: akurasi dunia nyata 86,67 % pada 30 gambar adalah, dengan caveat ukuran sampel, demonstrasi yang masuk akal bahwa fitur pretrained ImageNet menggeneralisasi melewati distribusi CIFAR asli. Itu *tidak* berarti model robust dalam arti produksi apa pun — sampel kecil, gambar sumber yang dikurasi, dan ketiadaan kondisi adversarial (oklusi, varians pencahayaan, motion blur) semuanya berargumen untuk evaluasi lebih lanjut sebelum deployment nyata.
 
 ## 9. Kesimpulan dan Pekerjaan Masa Depan
 
