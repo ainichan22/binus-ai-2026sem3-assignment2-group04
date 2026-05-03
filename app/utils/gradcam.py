@@ -2,6 +2,7 @@
 depend on tf-keras-vis. For MobileNetV2 the standard target layer is
 `Conv_1` (the final 1×1 conv before the global pooling)."""
 import numpy as np
+import streamlit as st
 import tensorflow as tf
 
 
@@ -22,6 +23,19 @@ def _resolve_target_layer(model: tf.keras.Model, layer_name: str = DEFAULT_LAYER
             except (ValueError, KeyError):
                 continue
     raise ValueError(f"Could not find layer named {layer_name!r} in model")
+
+
+@st.cache_resource(show_spinner=False)
+def _build_grad_model(_model: tf.keras.Model, layer_name: str):
+    """Cached: build the (target-conv, predictions) sub-model exactly once
+    per session. The leading underscore on `_model` tells Streamlit not
+    to hash the argument — model identity is stable because it comes
+    from a @st.cache_resource loader."""
+    target_layer = _resolve_target_layer(_model, layer_name)
+    return tf.keras.Model(
+        inputs=_model.inputs,
+        outputs=[target_layer.output, _model.output],
+    )
 
 
 def grad_cam(
@@ -46,15 +60,7 @@ def grad_cam(
     if image.ndim == 3:
         image = np.expand_dims(image, 0)
 
-    target_layer = _resolve_target_layer(model, layer_name)
-
-    # Build a model whose input is the wrapper's input and whose outputs
-    # are (target_layer.output, model.output). The sub-model is rebuilt
-    # each call — small overhead but no caching pitfalls.
-    grad_model = tf.keras.Model(
-        inputs=model.inputs,
-        outputs=[target_layer.output, model.output],
-    )
+    grad_model = _build_grad_model(model, layer_name)
 
     with tf.GradientTape() as tape:
         conv_out, preds = grad_model(image, training=False)
