@@ -144,11 +144,11 @@
 - [x] commit + push
 
 ### Colab 訓練 ID (User)
-- [ ] 上傳 ID notebook,Run All(~3-5 分鐘 — 純 load + eval)
-- [ ] 確認 test accuracy = 0.8689 與 EN 一致
+- [x] 上傳 ID notebook,Run All — 三段 load(best_hp / .keras / history)都成功
+- [x] Test accuracy 0.8689 與 EN 一致 ✓,印尼文 outputs / class_names / cm labels 全到位
 
 ### 本機後處理 ID
-- [ ] User 下載 trained `.ipynb`、Claude commit + push
+- [x] User 下載 trained `.ipynb`、Claude commit + push
 
 ---
 
