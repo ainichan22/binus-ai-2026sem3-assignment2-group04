@@ -2,7 +2,7 @@
 
 **Mata Kuliah:** Machine Learning (LO 3) — Tugas Kelompok 2
 **Kelompok:** binus-ai-2026sem3-assignment2-group04
-**Penulis:** _TBD — anggota kelompok_
+**Penulis:** Kelompok 4
 **Tanggal:** Mei 2026
 
 **Demo live:** <https://huggingface.co/spaces/ainichan/binus-ai-2026sem3-assignment2-group04>

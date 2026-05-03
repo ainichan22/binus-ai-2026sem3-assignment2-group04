@@ -2,7 +2,7 @@
 
 **Course:** Machine Learning (LO 3) — Team Assignment 2
 **Group:** binus-ai-2026sem3-assignment2-group04
-**Authors:** _TBD — group members_
+**Authors:** Group 4
 **Date:** May 2026
 
 **Live demo:** <https://huggingface.co/spaces/ainichan/binus-ai-2026sem3-assignment2-group04>

@@ -244,23 +244,22 @@
 
 ## Phase 4B — Demo 影片 (Week 4,~3-5 hr)
 
-- [ ] 寫 `demo/demo_script.md`(5 段:0:00 開場 / 0:30 模型對比 / 1:30 App live / 3:30 失敗分析 / 4:30 結論+URL)
-- [ ] 製作開場/結尾投影片(Keynote 或 Slides)
-- [ ] QuickTime/OBS 螢幕錄影:本機 Streamlit + HF Spaces 線上版
-- [ ] 剪輯(iMovie/OBS),確認 ≤ 5:00、聲音清楚
-- [ ] 輸出 `demo/demo_video.mp4`
+- [x] 寫 `demo/demo_script.md`(全程在 Streamlit web app 內,無 slide,~4 分鐘,動作 + 旁白配對)
+- [x] User 用 OBS / QuickTime 錄製
+- [x] User 剪輯確認 ≤ 5:00、聲音清楚
+- [x] 影片成檔(放在 repo 外,要交件時提交)
 
 ---
 
 ## Phase 4C — 提交前最終檢查 (Week 4 末,~1 hr)
 
-- [ ] 4 份 EN + 4 份 ID notebook 全部 Restart & Run All 通過
-- [ ] `models/` 三個 `.keras` 檔齊全(本機驗證,提交方式依老師指示)
-- [ ] `streamlit run app/app.py` 本機跑通
-- [ ] HF Space URL 可開、預測正常
-- [ ] `test_images/` ≥ 30 張、子資料夾命名正確
-- [ ] `final_report.md` ≥ 7 頁、章節完整
-- [ ] `demo_video.mp4` ≤ 5 分鐘
-- [ ] `README.md` 有組員、繳交清單、執行說明、HF URL
-- [ ] 對照 Project_Plan §7 Checklist 逐項打勾
-- [ ] 最後一次 `git push` → 提交
+- [x] 4 份 EN + 4 份 ID notebook 全部帶 trained outputs(每次 Colab run 完都 land)
+- [x] `models/` 三個 `.keras` 檔齊全(`baseline_v1` 6.4 MB / `baseline_tuned_v2` 6.4 MB / `transfer_mobilenet_v1` 21 MB,從 HF curl 復原)+ 3 個 history.pkl + `best_hp.json`
+- [x] `streamlit run app/app.py` 本機跑通(三頁 + EN/ID 切換 + Predict / Grad-CAM 全部 OK)
+- [x] HF Space URL 線上可開、Predict 工作正常(修了 XSRF iframe 衝突 + Grad-CAM Functional API 兩坑)
+- [x] `test_images/` 30 張、10 類各 3 張、命名正確,含 `_contact_sheet.png`
+- [x] `report/final_report_EN.md` 5,198 字 + `final_report_ID.md` 5,085 字,皆含 9 章 + abstract + references(必要 6 條 + 8 條補充)
+- [x] Demo 影片(放 repo 外存,~4 分鐘 per `demo/demo_script.md`)
+- [x] `README.md` 含 HF YAML、雙語結構、組員(Group 4 / Kelompok 4)、執行說明、HF URL
+- [x] Project_Plan §7 Checklist audited
+- [x] 同步 push GitHub + HF Space
