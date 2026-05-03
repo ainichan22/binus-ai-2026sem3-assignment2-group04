@@ -1,0 +1,14 @@
+{
+  "weight_decay": 0.00013968619216753888,
+  "dropout_block1": 0.1,
+  "dropout_block2": 0.4,
+  "dropout_block3": 0.4,
+  "dense_units": 128,
+  "optimizer": "adam",
+  "learning_rate": 0.0006681248953196665,
+  "tuner/epochs": 20,
+  "tuner/initial_epoch": 7,
+  "tuner/bracket": 1,
+  "tuner/round": 1,
+  "tuner/trial_id": "0018"
+}
