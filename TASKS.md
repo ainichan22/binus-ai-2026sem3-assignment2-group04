@@ -27,13 +27,23 @@
 
 ## Phase 1A — Baseline 重訓 (~20 min,Colab)
 
-- [ ] `01_baseline_EN.ipynb` 上傳 Colab(Runtime → GPU T4)
-- [ ] Cell 1 套用 Project_Plan §2.2 開頭模板,確認 Drive 掛載、GPU 可見、`PROJECT_DIR` 正確
-- [ ] 在 notebook 最尾端新增 `model.save(f"{MODEL_DIR}/baseline_v1.keras")` 與 history pickle
-- [ ] **Restart & Run All**,確認複現 ~85% test accuracy
-- [ ] 從 Colab 下載 `.ipynb` 覆蓋本機 `notebooks/01_baseline_EN.ipynb`
-- [ ] 從 Drive 下載 `baseline_v1.keras` 到本機 `models/`(僅本機,不進 git)
-- [ ] commit + push
+### 本機準備 (Claude)
+- [x] 在 `01_baseline_EN.ipynb` 最前面插入 Project_Plan §2.2 開頭模板 cell(Drive mount + `PROJECT_DIR` 設定 + GPU 檢查)
+- [x] 在 `01_baseline_EN.ipynb` 最尾端新增 cell:`model.save(f"{MODEL_DIR}/baseline_v1.keras")` + 用 pickle 存 history(置於 §13 討論之後,作為新 §14)
+- [x] commit + push 修改
+
+### Colab 訓練 (User)
+- [ ] 上傳 `notebooks/01_baseline_EN.ipynb` 到 Colab
+- [ ] Runtime → Change runtime type → GPU (T4)
+- [ ] Restart & Run All,確認:
+  - Drive 掛載成功、GPU 可見
+  - 訓練跑完(~20 分鐘)、test accuracy ≈ 85%
+  - Drive `models/` 出現 `baseline_v1.keras` 與 `*_history.pkl`
+
+### 本機後處理 (Claude + User)
+- [ ] User 從 Colab 下載 `.ipynb` 回到本機 `notebooks/01_baseline_EN.ipynb`
+- [ ] User 從 Drive 下載 `baseline_v1.keras` 到本機 `models/`
+- [ ] Claude 檢查結果、commit + push notebook
 
 ---
 
