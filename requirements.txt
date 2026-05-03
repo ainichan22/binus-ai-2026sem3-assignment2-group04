@@ -1,0 +1,9 @@
+# Root-level requirements.txt — used by the HF Spaces Docker build.
+# Mirror of app/requirements.txt; keep them in sync.
+streamlit>=1.50
+tensorflow>=2.15
+Pillow>=10.0
+numpy>=1.24
+matplotlib>=3.7
+pandas>=2.0
+datasets>=2.14

@@ -1,3 +1,14 @@
+---
+title: CIFAR-10 Image Classifier
+emoji: 🖼️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+short_description: VGG-style baseline + MobileNetV2 transfer learning, EN/ID UI
+---
+
 # binus-ai-2026sem3-assignment2-group04
 
 > CIFAR-10 image classification with model optimization and a Streamlit web app.

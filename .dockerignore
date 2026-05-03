@@ -1,0 +1,25 @@
+# Don't ship dev / repo metadata into the Space image.
+.venv
+.git
+.gitignore
+.python-version
+.DS_Store
+__pycache__
+*.pyc
+*.pyo
+*.swp
+
+# Notebooks are training-time artifacts, not needed in the runtime image.
+notebooks
+
+# Workspace-only directories.
+test_images
+demo
+TASKS.md
+
+# IDE
+.vscode
+.idea
+
+# Keras Tuner search artifacts (regenerable, not needed at runtime)
+keras_tuner
