@@ -64,7 +64,8 @@ HISTORY_PATHS = {
 }
 
 CONFUSION_FIGS = {
-    "baseline": APP_DIR.parent / "report" / "figures" / "confusion-matrix.png",
+    "baseline": APP_DIR.parent / "report" / "figures" / "confusion-matrix-baseline.png",
+    "transfer": APP_DIR.parent / "report" / "figures" / "confusion-matrix-transfer.png",
 }
 
 
@@ -129,6 +130,6 @@ st.dataframe(df, use_container_width=True, hide_index=True)
 st.subheader(t("metrics.confusion_matrix_header"))
 fig_path = CONFUSION_FIGS.get(choice)
 if fig_path and fig_path.exists():
-    st.image(str(fig_path))
+    st.image(str(fig_path), use_container_width=True)
 else:
-    st.info("See the trained notebook for the full confusion matrix figure.")
+    st.warning(f"Confusion matrix figure not found at {fig_path}.")
