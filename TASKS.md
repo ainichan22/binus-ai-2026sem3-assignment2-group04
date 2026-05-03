@@ -103,15 +103,43 @@
 
 ---
 
-## Phase 1C — Hyperparameter Tuning (1-1.5 hr,Colab)
+## Phase 1C — Hyperparameter Tuning (1.5-2 hr,Colab)
 
-- [ ] Drive 建立 `02_hyperparameter_tuning_EN.ipynb`,套用開頭模板
-- [ ] `pip install keras-tuner`,寫 `build_model(hp)` 函式(對照 Project_Plan §4.1 搜尋空間表)
-- [ ] Hyperband:`max_epochs=20`、`factor=3`、總 trials ≤ 30
-- [ ] 取出 `tuner.get_best_hyperparameters(1)[0]`,輸出 `best_hp.json`
-- [ ] 用最佳 HP 重訓 50 epochs(含 EarlyStopping),存 `baseline_tuned_v2.keras` + history
-- [ ] 比較三模型 test accuracy,輸出對比表(報告 ch.6 用)
-- [ ] 下載 `.ipynb` 到本機,commit + push
+### 本機準備 (Claude)
+- [x] 建立 `notebooks/02_hyperparameter_tuning_EN.ipynb`(30 cells)涵蓋:
+  - Cell 0: Drive mount + `TUNER_DIR`(讓 Hyperband 在 Drive 持久化,可中斷續跑)
+  - §0-3: 同 baseline 的 setup / HF data load / split / augmentation(`SEED=42` 與 baseline val set 完全一致,確保公平對比)
+  - §4 HyperModel: `build_model(hp)` 暴露 7 個 HP — `learning_rate` (log)、`dropout_block1/2/3`、`weight_decay` (log)、`dense_units` (64/128/256)、`optimizer` (adam/adamw/sgd)
+  - §5 Hyperband: `max_epochs=20`、`factor=3`、`overwrite=False` 支援續跑、trial 內含 patience=3 EarlyStopping
+  - §6: 抓 best HP、存 `best_hp.json`、印 top 5 trials
+  - §7: 用 best HP 重訓滿 50 epochs(同 baseline 的 EarlyStopping/ReduceLROnPlateau 設定)
+  - §8-11: 訓練曲線、test eval、混淆矩陣、top-9 misclass
+  - §12: 三模型對比表(baseline 0.8735 / tuned 待填 / transfer 0.8993)
+  - §13: 存 `baseline_tuned_v2.keras` + `baseline_tuned_v2_history.pkl`
+- [ ] commit + push
+
+### Colab 訓練 EN (User)
+- [ ] 上傳 `notebooks/02_hyperparameter_tuning_EN.ipynb` 到 Colab,Runtime → GPU (T4)
+- [ ] Restart & Run All — 預計 **1.5-2 hr 搜尋 + 30 min 重訓**(總 2-2.5 hr)
+- [ ] 中途若 Colab 斷線,直接重跑 cell 13;Hyperband 從 Drive `keras_tuner/` 續跑不會重來
+- [ ] 確認:
+  - `best_hp.json` 出現在 Drive
+  - Tuned baseline test accuracy(應該 0.88-0.90,介於 baseline 0.8735 與 transfer 0.8993 之間)
+  - Drive `models/` 出現 `baseline_tuned_v2.keras` + history.pkl
+
+### 本機後處理 EN (Claude + User)
+- [ ] User 下載 trained `.ipynb` 覆蓋本機 `notebooks/02_hyperparameter_tuning_EN.ipynb`
+- [ ] User 從 Drive 下載 `baseline_tuned_v2.keras` + `best_hp.json` + history.pkl 到本機 `models/`
+- [ ] Claude review、commit + push
+
+### 本機準備 ID (Claude,跟 1B 模式一樣)
+- [ ] 建立 `notebooks/02_hyperparameter_tuning_ID.ipynb`(option C:載入 EN 跑出來的 `baseline_tuned_v2.keras` 跳過搜尋與重訓,印尼文 markdown / class_names / prints)
+
+### Colab 訓練 ID (User)
+- [ ] 上傳 ID notebook,Run All(~3-5 分鐘 — 純 load + eval)
+
+### 本機後處理 ID
+- [ ] User 下載 trained `.ipynb`、Claude commit + push
 
 ---
 
