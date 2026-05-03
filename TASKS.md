@@ -30,20 +30,22 @@
 ### 本機準備 (Claude)
 - [x] 在 `01_baseline_EN.ipynb` 最前面插入 Project_Plan §2.2 開頭模板 cell(Drive mount + `PROJECT_DIR` 設定 + GPU 檢查)
 - [x] 在 `01_baseline_EN.ipynb` 最尾端新增 cell:`model.save(f"{MODEL_DIR}/baseline_v1.keras")` + 用 pickle 存 history(置於 §13 討論之後,作為新 §14)
+- [x] 把同一個 Drive mount cell 鏡到 `01_baseline_ID.ipynb` 最前面(**選項 C**:不加 save cell — 模型只在 EN 存一次,ID 純跑 cell outputs)
 - [x] commit + push 修改
 
 ### Colab 訓練 (User)
-- [ ] 上傳 `notebooks/01_baseline_EN.ipynb` 到 Colab
-- [ ] Runtime → Change runtime type → GPU (T4)
-- [ ] Restart & Run All,確認:
+- [ ] 上傳 `notebooks/01_baseline_EN.ipynb` 到 Colab,Runtime → GPU (T4)
+- [ ] EN: Restart & Run All(~20 分鐘),確認:
   - Drive 掛載成功、GPU 可見
-  - 訓練跑完(~20 分鐘)、test accuracy ≈ 85%
-  - Drive `models/` 出現 `baseline_v1.keras` 與 `*_history.pkl`
+  - test accuracy ≈ 85%
+  - Drive `models/` 出現 `baseline_v1.keras` 與 `baseline_v1_history.pkl`
+- [ ] EN 跑完之後,上傳 `notebooks/01_baseline_ID.ipynb` 到 Colab(可同 session)
+- [ ] ID: Restart & Run All(~20 分鐘)— 只為了讓 ID notebook 有 cell outputs,不會碰到 keras 檔
 
 ### 本機後處理 (Claude + User)
-- [ ] User 從 Colab 下載 `.ipynb` 回到本機 `notebooks/01_baseline_EN.ipynb`
+- [ ] User 從 Colab 下載 EN/ID 兩份 `.ipynb` 覆蓋本機 `notebooks/`
 - [ ] User 從 Drive 下載 `baseline_v1.keras` 到本機 `models/`
-- [ ] Claude 檢查結果、commit + push notebook
+- [ ] Claude 檢查結果、commit + push notebooks
 
 ---
 
