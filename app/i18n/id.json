@@ -1,0 +1,43 @@
+{
+  "app.title": "Pengklasifikasi Gambar CIFAR-10",
+  "app.subtitle": "Transfer learning dari MobileNetV2",
+  "app.tagline": "Unggah foto atau pilih sampel untuk mengklasifikasikannya ke salah satu dari 10 kategori CIFAR-10.",
+  "app.pick_a_page": "Pilih halaman dari sidebar untuk memulai",
+  "app.predict_desc": "unggah gambar dan lihat 3 prediksi teratas plus peta Grad-CAM.",
+  "app.metrics_desc": "kurva pelatihan, laporan per kelas, confusion matrix.",
+  "app.about_desc": "arsitektur model, tim, referensi.",
+
+  "nav.predict": "Prediksi",
+  "nav.metrics": "Metrik",
+  "nav.about": "Tentang",
+
+  "predict.input_method": "Metode input",
+  "predict.upload": "Unggah gambar",
+  "predict.sample": "Pilih sampel",
+  "predict.camera": "Ambil foto",
+  "predict.upload_label": "Unggah JPG / PNG (ukuran bebas)",
+  "predict.sample_label": "Gambar sampel",
+  "predict.no_input": "Pilih metode input untuk memulai.",
+  "predict.no_samples": "Sampel gambar tidak ditemukan. Jalankan app/samples/make_samples.py untuk membuatnya.",
+  "predict.processing": "Menjalankan prediksi...",
+  "predict.top3_header": "3 prediksi teratas",
+  "predict.gradcam_header": "Bagian yang diperhatikan model (Grad-CAM)",
+  "predict.confidence": "Tingkat keyakinan",
+  "predict.disclaimer": "CIFAR-10 dilatih pada thumbnail 32×32. Foto resolusi tinggi terkadang akan salah diklasifikasi — ini adalah domain gap yang sudah diketahui, bukan bug.",
+
+  "metrics.title": "Metrik Model",
+  "metrics.summary_header": "Ringkasan",
+  "metrics.compare_header": "Perbandingan model",
+  "metrics.training_curves_header": "Kurva pelatihan",
+  "metrics.classification_report_header": "Laporan per kelas",
+  "metrics.confusion_matrix_header": "Confusion matrix (test set CIFAR-10)",
+  "metrics.model_picker": "Pilih model",
+  "metrics.history_missing": "File history tidak ditemukan di {path}. Pastikan .pkl ada di models/.",
+
+  "about.title": "Tentang proyek ini",
+  "about.team": "Tim",
+  "about.architecture": "Arsitektur model",
+  "about.references": "Referensi",
+  "about.github": "Kode sumber",
+  "about.team_tbd": "_TBD: anggota tim_"
+}

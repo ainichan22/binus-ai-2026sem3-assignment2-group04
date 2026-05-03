@@ -105,6 +105,8 @@
 
 ## Phase 1C — Hyperparameter Tuning (1.5-2 hr,Colab)
 
+> **平行進度提示:** Phase 1C 在 Colab 跑時,Phase 2 (Streamlit App) 可以同時開始 — App 只需要 `transfer_mobilenet_v1.keras` 與 `baseline_v1.keras`(已在本機),不依賴 tuned baseline。
+
 ### 本機準備 (Claude)
 - [x] 建立 `notebooks/02_hyperparameter_tuning_EN.ipynb`(30 cells)涵蓋:
   - Cell 0: Drive mount + `TUNER_DIR`(讓 Hyperband 在 Drive 持久化,可中斷續跑)
@@ -155,18 +157,25 @@
 
 ## Phase 2 — Streamlit App (Week 2,本機,~10-15 hr)
 
-- [ ] `app/requirements.txt`(streamlit、tensorflow-cpu、Pillow、opencv-python、tf-keras-vis 等)
-- [ ] **i18n 模組**:`app/i18n/__init__.py`(`t()` + `language_selector()`)、`en.json`、`id.json`(同 key)
-- [ ] **utils**:
-  - `preprocess.py`(跟訓練 pipeline 一致:resize → preprocess_input)
-  - `model_loader.py`(`@st.cache_resource` 載入 `transfer_mobilenet_v1.keras`)
-  - `gradcam.py`(目標層 `Conv_1`)
-- [ ] `app/samples/`:每類一張範例圖(共 10 張)
-- [ ] `app/app.py`:主入口,sidebar 放 `language_selector()`
-- [ ] **Page 1 Predict**:檔案上傳/範例圖/攝影機 → 顯示原圖 → Top-3 條狀圖 → Grad-CAM 疊加圖
-- [ ] **Page 2 Metrics**:test set 混淆矩陣(plotly heatmap)、per-class P/R/F1 表、訓練曲線
-- [ ] **Page 3 About**:模型架構摘要、組員、references、GitHub 連結
-- [ ] 本機測試:`streamlit run app/app.py`,所有 page + 語言切換正常
+> 可在 Phase 1C Colab 訓練期間平行進行(App 只用 baseline + transfer 兩個模型,不依賴 tuned baseline)。
+
+### 2.1 App skeleton (Claude)
+- [x] `app/requirements.txt`(streamlit、tensorflow、Pillow、numpy、matplotlib、pandas、datasets)
+- [x] `app/i18n/{__init__.py, en.json, id.json}` — `t()` 函式 + `language_selector()`,en/id 各 37 個 key 完全對齊
+- [x] `app/utils/preprocess.py`(跟訓練一致:center-crop → resize 96 → `preprocess_input`,含 EN/ID class_names)
+- [x] `app/utils/model_loader.py`(`@st.cache_resource` 載入 transfer + baseline,支援 HF Spaces 與本機路徑)
+- [x] `app/utils/gradcam.py`(手刻版,目標層 MobileNetV2 `Conv_1`,免裝 tf-keras-vis)
+- [x] `app/app.py` 主入口 + sidebar `language_selector()`
+- [x] `app/pages/1_Predict.py` — 上傳/範例/攝影機 → 顯示原圖 → Top-3 → Grad-CAM
+- [x] `app/pages/2_Metrics.py` — 訓練曲線(讀 `models/*_history.pkl`)+ 靜態混淆矩陣 + per-class 表
+- [x] `app/pages/3_About.py` — 模型架構、組員、references、GitHub 連結
+- [x] `app/samples/make_samples.py` — 一次性 helper:從 HF datasets 抽 10 張 CIFAR-10 範例圖
+
+### 2.2 本機 setup + 測試 (User)
+- [ ] `python -m venv .venv && source .venv/bin/activate && pip install -r app/requirements.txt`
+- [ ] `cd app/samples && python make_samples.py`(產生 10 張 PNG)
+- [ ] 回到 git root,`streamlit run app/app.py`
+- [ ] 確認:三頁都開得起來、語言切換正常、上傳一張圖能跑出 Top-3 + Grad-CAM
 - [ ] commit + push
 
 ---

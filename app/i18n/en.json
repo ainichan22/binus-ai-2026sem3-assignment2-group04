@@ -1,0 +1,43 @@
+{
+  "app.title": "CIFAR-10 Image Classifier",
+  "app.subtitle": "Transfer learning from MobileNetV2",
+  "app.tagline": "Upload a photo or pick a sample to classify it into one of 10 CIFAR-10 categories.",
+  "app.pick_a_page": "Pick a page from the sidebar to start",
+  "app.predict_desc": "upload an image and see top-3 predictions plus a Grad-CAM heatmap.",
+  "app.metrics_desc": "training curves, per-class report, confusion matrix.",
+  "app.about_desc": "model architecture, team, references.",
+
+  "nav.predict": "Predict",
+  "nav.metrics": "Metrics",
+  "nav.about": "About",
+
+  "predict.input_method": "Input method",
+  "predict.upload": "Upload an image",
+  "predict.sample": "Pick a sample",
+  "predict.camera": "Take a photo",
+  "predict.upload_label": "Upload a JPG / PNG (any size)",
+  "predict.sample_label": "Sample image",
+  "predict.no_input": "Choose an input method to start.",
+  "predict.no_samples": "No sample images found. Run app/samples/make_samples.py to generate them.",
+  "predict.processing": "Running prediction...",
+  "predict.top3_header": "Top-3 predictions",
+  "predict.gradcam_header": "Where the model looked (Grad-CAM)",
+  "predict.confidence": "Confidence",
+  "predict.disclaimer": "CIFAR-10 was trained on 32×32 thumbnails. Real-world high-resolution photos will sometimes be misclassified — this is a known domain gap, not a bug.",
+
+  "metrics.title": "Model Metrics",
+  "metrics.summary_header": "Summary",
+  "metrics.compare_header": "Model comparison",
+  "metrics.training_curves_header": "Training curves",
+  "metrics.classification_report_header": "Per-class report",
+  "metrics.confusion_matrix_header": "Confusion matrix (CIFAR-10 test set)",
+  "metrics.model_picker": "Choose model",
+  "metrics.history_missing": "History file not found at {path}. Make sure the .pkl is in models/.",
+
+  "about.title": "About this project",
+  "about.team": "Team",
+  "about.architecture": "Model architecture",
+  "about.references": "References",
+  "about.github": "Source code",
+  "about.team_tbd": "_TBD: team members_"
+}
