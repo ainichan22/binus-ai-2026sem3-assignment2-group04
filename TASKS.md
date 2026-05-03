@@ -10,14 +10,15 @@
 
 ## Phase 0 — 本機整理 + GitHub 建立 (< 30 min,本機)
 
-- [ ] 進入 `Assignment-3/binus-ai-2026sem3-assignment2-group04/` 建立目錄骨架: `notebooks/`、`models/`、`app/{i18n,pages,utils,samples}`、`test_images/`、`report/figures/`、`demo/`
-- [ ] 建立 `.gitignore`(`.DS_Store`、`models/*.keras`、`__pycache__/`、`.venv/`、`.ipynb_checkpoints/`)
-- [ ] 搬檔(`Project_Plan.md` 保留在 `Assignment-3/` 外層,不搬):
+- [x] 進入 `Assignment-3/binus-ai-2026sem3-assignment2-group04/` 建立目錄骨架: `notebooks/`、`models/`、`app/{i18n,pages,utils,samples}`、`test_images/`、`report/figures/`、`demo/`
+- [x] 建立 `.gitignore`(`.DS_Store`、`models/*.keras`、`__pycache__/`、`.venv/`、`.ipynb_checkpoints/`)
+- [x] 搬檔(`Project_Plan.md` 保留在 `Assignment-3/` 外層,不搬):
   - `Assignment-3/Assignment2_CNN_Architecture_EN.ipynb` → `notebooks/01_baseline_EN.ipynb`
   - `Assignment-2/Assignment2_CNN_Architecture_ID.ipynb` → `notebooks/01_baseline_ID.ipynb`
   - `Assignment-2/{confusion-matrix,train-history,top-9-most-confident-misclassification}.png` → `report/figures/`
-- [ ] 寫 `README.md`(雙語骨架,Project_Plan §5.4 範例)
-- [ ] `git init` → 首次 commit
+- [x] 寫 `README.md`(雙語骨架,Project_Plan §5.4 範例)
+- [x] `git init` → 首次 commit (`3f91e1e`)
+- [ ] (建議 push 前先設 `git config user.name` 與 `user.email`)
 - [ ] GitHub 建 private repo `binus-ai-2026sem3-assignment2-group04` → `git push`
 - [ ] 邀請組員加 collaborator
 - [ ] Drive 端建立 `models/` 子資料夾
