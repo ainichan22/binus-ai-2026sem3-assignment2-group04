@@ -217,24 +217,26 @@
 - [x] 等 Docker build(~5-10 分鐘)
 - [x] 線上煙霧測試:Sample predict OK
 - [x] 寫 Space URL 進主 repo `README.md` 取代 `_TBD_`
+- [x] 修真實圖片上傳 403 錯誤(Streamlit XSRF + HF Spaces iframe 不相容,加 `--server.enableXsrfProtection=false`)
+- [x] HF push 因 UI 上傳的 commits 衝突,`git pull hf main --no-rebase` 解決
 
 ---
 
 ## Phase 4A — 報告撰寫 (Week 3 下半 ~ Week 4,~10 hr)
 
-- [ ] `report/final_report.md` 建立章節骨架(對照 Project_Plan §4.5 表)
-- [ ] **ch.1 Introduction** (0.5p):專案目標、CIFAR-10、貢獻摘要
-- [ ] **ch.2 Dataset & Preprocessing** (0.5p):分割、normalization、augmentation
-- [ ] **ch.3 Baseline Model** (1p):VGG-inspired 架構圖 + 結果(用 `report/figures/` 既有圖)
-- [ ] **ch.4 Hyperparameter Tuning** (1.5p):搜尋空間表、最佳 HP、結果
-- [ ] **ch.5 Transfer Learning** (1.5p):MobileNetV2 架構、兩階段訓練曲線
-- [ ] **ch.6 Comparison & Discussion** (1p):三模型橫向對比表
-- [ ] **ch.7 Web Application** (1.5p):App 架構、screenshot、Grad-CAM 範例、HF URL
-- [ ] **ch.8 Real-world Testing** (1.5p):結果表、失敗案例分析、domain gap 討論
-- [ ] **ch.9 Conclusion & Future Work** (0.5p)
-- [ ] **References** (0.5p):IEEE/APA 格式,Project_Plan §7 checklist 那 6 篇必收
-- [ ] 印尼文 Abstract(附在英文 Abstract 後或附錄)
-- [ ] 校稿 → 確認 ≥ 7 頁 → 視需要轉 PDF
+- [x] `report/final_report.md` 完整草稿(Claude 寫,參照三本 trained notebook + `report/figures/`)
+- [x] **ch.1 Introduction**:專案目標、CIFAR-10、貢獻摘要
+- [x] **ch.2 Dataset & Preprocessing**:分割、normalization、augmentation
+- [x] **ch.3 Baseline Model**:VGG-inspired 架構 + 結果 + figures
+- [x] **ch.4 Hyperparameter Tuning**:搜尋空間表、Top-5 trials、最佳 HP、結果
+- [x] **ch.5 Transfer Learning**:MobileNetV2 架構、兩階段訓練曲線
+- [x] **ch.6 Comparison & Discussion**:三模型橫向對比表 + per-class delta
+- [x] **ch.7 Web Application**:App 架構、Grad-CAM 範例、HF URL
+- [ ] **ch.8 Real-world Testing**:**等 Phase 3A 完成後填**(目前先放 methodology placeholder)
+- [x] **ch.9 Conclusion & Future Work**
+- [x] **References**:IEEE 格式
+- [x] 英文 Abstract + 印尼文 Abstract(放在英文之後)
+- [ ] User: 校稿 → 補組員名字 → 確認 ≥ 7 頁 → 視需要轉 PDF
 
 ---
 
